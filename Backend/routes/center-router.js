@@ -4,6 +4,7 @@ import {
   addScan,
   categoryDetails,
   continueTrue,
+  fetchBookingDetails,
   getAddTestDetails,
   getCenters,
   getIsSubmitte,
@@ -11,6 +12,7 @@ import {
   listingDetails,
   reapply,
   registerScan,
+  scanDetails,
   searchDetails,
 } from "../controllers/center-controller.js";
 import { upload } from "../middleware/multer.js";
@@ -48,7 +50,9 @@ centerRouter.patch(
   reapply
 );
 centerRouter.get("/listingdetails", verifyToken, listingDetails);
-centerRouter.post("/search", verifyToken, searchDetails);
+centerRouter.get("/search", verifyToken, searchDetails);
 centerRouter.get('/fetchtestdetails/:id',verifyToken,categoryDetails)
 centerRouter.get('/fetchaddtest/:centerid',verifyToken,getAddTestDetails)
+centerRouter.post('/getTestDetails',verifyToken,scanDetails)
+centerRouter.get('/fetchbookings/:centerid',verifyToken,fetchBookingDetails)
 export default centerRouter;

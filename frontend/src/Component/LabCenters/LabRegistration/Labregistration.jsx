@@ -3,18 +3,19 @@ import Labstepper from "../LabStepper/Labstepper";
 import Header from "../../Header/Header";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { allDetails } from "../../../redux/features/labSlice";
-import LabComfirmationPage from '../LabApproval/LabRegistrationComp'
-import LabTabs from '../Tabs/LabTabs'
+import LabComfirmationPage from "../LabApproval/LabRegistrationComp";
+import LabTabs from "../Tabs/LabTabs";
 const Labregistration = () => {
-  const dispatch=useDispatch()
- const labData=useSelector((state)=>state.labcenter.labData)
- console.log("labData",labData)
+  const dispatch = useDispatch();
+  const labData = useSelector((state) => state.labcenter.labData);
+  console.log("labData", labData);
+  console.log("labData", labData?.isContinue);
 
-useEffect(()=>{
-  dispatch(allDetails())
-},[])
+  useEffect(() => {
+    dispatch(allDetails());
+  }, []);
 
   return (
     <div>
@@ -24,7 +25,7 @@ useEffect(()=>{
           sx={{ bgcolor: "#cfe8fc" }}
           style={{ padding: "30px 30px 30px 30px" }}
         >
-           {labData?.isContinue ? (
+          {labData?.isContinue ? (
             <LabTabs labId={labData?._id} />
           ) : labData?.isSubmitted ? (
             <LabComfirmationPage

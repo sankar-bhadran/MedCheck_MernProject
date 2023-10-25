@@ -75,7 +75,7 @@ const Userhomepage = () => {
               }}
             >
               <img
-                src={LapGifPIC}
+                src={LabPicture}
                 style={{
                   width: "90px",
                   height: "90px",

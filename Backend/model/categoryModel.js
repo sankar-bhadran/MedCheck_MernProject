@@ -11,7 +11,6 @@ const categorySchema = new mongoose.Schema({
     type: Object,
     required: true,
   },
-
   is_available: {
     type: Number,
     default: 1,

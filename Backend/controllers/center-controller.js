@@ -1,6 +1,8 @@
 import centerdetails from "../model/centerdetails.js";
 import Category from "../model/categoryModel.js";
 import TestModel from "../model/testModel.js";
+import testModel from "../model/testModel.js";
+import Appointments from "../model/appointmentModel.js";
 
 export const registerScan = async (req, res) => {
   try {
@@ -22,7 +24,6 @@ export const registerScan = async (req, res) => {
       ],
     });
     await register.save();
-    // console.log(register);
     return res
       .status(200)
       .json({ register, message: "Registeration successfull..!" });
@@ -69,7 +70,6 @@ export const getCenters = async (req, res) => {
 };
 
 export const getScanCategories = async (req, res) => {
-  console.log("reqqqqq", req.user);
   try {
     const scanCategories = await Category.find();
     return res
@@ -82,8 +82,6 @@ export const getScanCategories = async (req, res) => {
 
 export const addScan = async (req, res) => {
   const { mainCategory, subCategory, testDetails, price, centerID } = req.body;
-  console.log("req.body", req.body);
-  console.log("req.body", centerID);
   try {
     const testdetails = new TestModel({
       Lab: centerID,
@@ -95,7 +93,6 @@ export const addScan = async (req, res) => {
     });
     await testdetails.save();
 
-    console.log(testdetails);
     return res
       .status(200)
       .json({ message: "TestAdd Successfully", testdetails });
@@ -123,17 +120,10 @@ export const continueTrue = async (req, res) => {
 
 export const reapply = async (req, res) => {
   const id = req.user;
-  // console.log("id",id)
   const { image1, image2, image3, NABH, NABL, ISO } = req.files;
-  console.log("req.files", req.files);
   const { ...data } = req.body;
   const { CertificateImages, CenterImages } = req.body;
-  console.log(CertificateImages);
-  // console.log("DGFDGFD".CertificateImages[0]);
   const images = CenterImages.split(",");
-  console.log("sdfjbsdjfb", images);
-  console.log("req.body", req.body);
-  console.log("req.body11", req.body.NABH);
   try {
     const details = await centerdetails.findOneAndUpdate(
       { owner: id },
@@ -180,24 +170,31 @@ export const listingDetails = async (req, res) => {
 
 export const searchDetails = async (req, res) => {
   try {
+    console.log(req.query)
     const search = req.query.searchdata;
     const page = req.query.page;
-    const ITEM_PER_PAGE = 4;
-    console.log("Page", page);
-    console.log("search", search);
+    const location = req.query.location;
+    const ITEM_PER_PAGE = 6;
     const query = {
-      CenterName: { $regex: search, $options: "i" },
+      $or: [
+        { CenterName: { $regex: search, $options: "i" } },
+        { City: { $regex: search, $options: "i" } },
+      ],
     };
-    const count = await centerdetails.countDocuments(query);
+    if (location) {
+      query.City = location;
+    }
+    const count = await centerdetails.countDocuments({ isVerified: true });
     console.log("count", count);
     const skip = (page - 1) * ITEM_PER_PAGE;
     const scanSearch = await centerdetails
       .find(query)
+      .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(ITEM_PER_PAGE)
+      .limit(ITEM_PER_PAGE);
 
-    // console.log("scanSearch", scanSearch);
     const pageCount = Math.ceil(count / ITEM_PER_PAGE);
+    console.log("pageCount", pageCount);
     return res.status(200).json({ scanSearch, pageCount });
   } catch (error) {
     return res.status(400).json({ message: "somthing went wrong" });
@@ -206,7 +203,6 @@ export const searchDetails = async (req, res) => {
 
 export const categoryDetails = async (req, res) => {
   const { id } = req.params;
-  console.log("id", id);
   try {
     const fetchCategory = await TestModel.find({ Lab: id });
     return res
@@ -221,7 +217,6 @@ export const getAddTestDetails = async (req, res) => {
   const id = req.params.centerid;
   try {
     const addedDetails = await TestModel.find({ Lab: id });
-    console.log("addDetails", addedDetails);
 
     if (addedDetails.length === 0) {
       return res.status(404).json({ message: "No data found" });
@@ -232,5 +227,33 @@ export const getAddTestDetails = async (req, res) => {
       .json({ addedDetails, message: "data fetched successfully" });
   } catch (error) {
     console.error("Error in searchDetails:", error);
+  }
+};
+
+export const scanDetails = async (req, res) => {
+  const { mainCategory, clickedvalue, labId } = req.body;
+  try {
+    const details = await testModel.find({
+      Lab: labId,
+      mainCategory,
+      subCategory: clickedvalue,
+    });
+    return res
+      .status(200)
+      .json({ details, message: "data fetched successfully" });
+  } catch (error) {
+    console.error("Error in searchDetails:", error);
+  }
+};
+
+export const fetchBookingDetails = async (req, res) => {
+  const id = req.params.centerid;
+  try {
+    const appointments = await Appointments.find({ labId: id });
+    return res
+      .status(200)
+      .json({ appointments, message: "data fetched successfully" });
+  } catch (error) {
+    return res.status(400).json({ message: "somthing went wrong" });
   }
 };

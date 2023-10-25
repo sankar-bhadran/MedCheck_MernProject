@@ -88,6 +88,13 @@ const labDetailsSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+
+  type:{
+    type:String,
+    default: "LabCentre",
+
+  }
+
 });
 
 export default mongoose.model('labdetail',labDetailsSchema)

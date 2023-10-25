@@ -9,14 +9,45 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Link, useParams } from "react-router-dom";
 import { categorydetails } from "../../../redux/features/CenterSlice";
-import { clearTestDetails } from "../../../redux/features/CenterSlice";
+import {
+  clearTestDetails,
+  getTestDetails,
+} from "../../../redux/features/CenterSlice";
+import {
+  addToCart,
+  getuser,
+  removeFromCart,
+} from "../../../redux/features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Badge from "@mui/material/Badge";
+import { styled } from "@mui/material/styles";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  "& .MuiBadge-badge": {
+    right: -1,
+    top: 13,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: "0 6px",
+  },
+}));
+
 const DetailPage = () => {
+  const userdata = useSelector((state) => state.user.Data);
+  console.log("addtocart", userdata?.testCart?.item.length);
+  console.log("userData", userdata);
+  const [selectedValue, setSelectedValue] = useState(null);
+  const [clickedChips, setClickedChips] = useState("");
+
+  const handleChipClick = (value) => {
+    setSelectedValue(value);
+  };
+
   const dispatch = useDispatch();
   const { id } = useParams();
-  console.log("id", id);
 
   useEffect(() => {
     dispatch(categorydetails(id));
@@ -26,9 +57,16 @@ const DetailPage = () => {
     dispatch(clearTestDetails());
   }, []);
 
+  useEffect(() => {
+    dispatch(getuser());
+  }, []);
+
   const testdata = useSelector((state) => state.center.TestDetails);
+  const testDetails = useSelector((state) => state.center.CommonData);
+  console.log("testDetails", testDetails);
 
   const [selectedMainCategory, setSelectedMainCategory] = useState(null);
+  console.log("mainCategory", selectedMainCategory);
 
   const groupedData = {};
   testdata.forEach((item) => {
@@ -37,136 +75,204 @@ const DetailPage = () => {
     }
     groupedData[item.mainCategory].push(item.subCategory);
   });
+  const uniqueSubCategories = new Set();
 
   const handleMainCategoryClick = (selectedMainCategory) => {
     setSelectedMainCategory(selectedMainCategory);
   };
 
+  const getChipLabel = (e) => {
+    setClickedChips(e.currentTarget.innerText);
+  };
+
+  useEffect(() => {
+    const formData = {
+      mainCategory: selectedMainCategory,
+      clickedvalue: clickedChips,
+      labId: id,
+    };
+    dispatch(getTestDetails(formData));
+  }, [clickedChips]);
+
+  const handleClick = (id) => {
+    dispatch(addToCart(id));
+    console.log("id ", id);
+  };
+
+  const handleDelete = (id) => {
+    console.log("deleteId", id);
+    dispatch(removeFromCart(id));
+  };
+
   return (
-    <Box sx={{ margin: "70px" }}>
-      <Grid container spacing={3}>
-        {Object.keys(groupedData).map((mainCategory, index) => (
-          <Grid
-            item
-            key={mainCategory}
-            onClick={() => handleMainCategoryClick(mainCategory)}
-          >
+    <>
+      <Box sx={{ margin: "70px" }}>
+        <Grid container spacing={3}>
+          {Object.keys(groupedData).map((mainCategory, index) => (
+            <Grid
+              item
+              key={mainCategory}
+              onClick={() => handleMainCategoryClick(mainCategory)}
+            >
+              <Paper
+                sx={{
+                  width: "190px",
+                  height: "160px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderStyle: "solid",
+                  borderWidth: "1px",
+                  borderColor: "#1778F2",
+                  borderRadius: "6px",
+                }}
+              >
+                {mainCategory}
+              </Paper>
+            </Grid>
+          ))}
+
+          {selectedMainCategory ? (
+            <Grid item xs={12}>
+              <div>
+                {groupedData[selectedMainCategory].map((subCategory, index) => {
+                  if (!uniqueSubCategories.has(subCategory)) {
+                    uniqueSubCategories.add(subCategory);
+
+                    return (
+                      <Chip
+                        key={index}
+                        label={subCategory}
+                        component="a"
+                        // href="#basic-chip"
+                        variant="outlined"
+                        onClick={getChipLabel}
+                        sx={{
+                          margin: "4px",
+                        }}
+                      />
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+            </Grid>
+          ) : (
+            <Grid item xs={12}>
+              <div>No main category selected</div>
+            </Grid>
+          )}
+
+          <Grid item lg={12} md={6}>
             <Paper
               sx={{
-                width: "190px",
-                height: "160px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                width: "100%",
+                height: "101%",
+                borderRadius: "10px",
               }}
+              variant="outlined"
             >
-              {mainCategory}
+              {testDetails?.map((data) => (
+                <>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      margin: "30px",
+                    }}
+                  >
+                    <Stack direction={"row"} alignItems={"center"}>
+                      <Typography>{data.description}</Typography>
+                    </Stack>
+                    <Stack direction={"row"} alignItems={"center"} spacing={3}>
+                      <Divider
+                        orientation="vertical"
+                        flexItem
+                        sx={{ margin: "0 16px" }}
+                      />
+                      <Typography>₹ {data.price}</Typography>
+                      {/* {{const isValuePresent = userdata.testCart.item.some((obj) => obj.TestId === data.id)}}
+                      <Button
+                        type="submit"
+                        variant="outlined"
+                        sx={{ color: "#1778F2" }}
+                        onClick={() => handleClick(data._id)}
+                      >
+                        Add
+                      </Button> */}
+                      {userdata?.testCart.item.some(
+                        (obj) => obj.TestId === data._id
+                      ) ? (
+                        <Button
+                          type="submit"
+                          variant="outlined"
+                          // sx={{ color: "#FF0000" }}
+                          onClick={() => handleDelete(data._id)}
+                        >
+                          <DeleteIcon />
+                        </Button>
+                      ) : (
+                        <Button
+                          type="submit"
+                          variant="outlined"
+                          sx={{ color: "#1778F2" }}
+                          onClick={() => handleClick(data._id)}
+                        >
+                          Add
+                        </Button>
+                      )}
+                    </Stack>
+                  </Box>
+                  <Divider sx={{ margin: "5px" }} />
+                </>
+              ))}
             </Paper>
           </Grid>
-        ))}
-
-        {selectedMainCategory ? (
-          <Grid item xs={12}>
-            {/* <h2>Subcategories for {selectedMainCategory}</h2> */}
-            <div>
-              {groupedData[selectedMainCategory].map((subCategory, index) => (
-                <Chip
-                  key={index}
-                  label={subCategory}
-                  component="a"
-                  href="#basic-chip"
-                  variant="outlined"
-                  clickable
-                  sx={{ margin: "4px" }}
-                />
-              ))}
-            </div>
-          </Grid>
-        ) : (
-          <Grid item xs={12}>
-            <div>No main category selected</div>
-          </Grid>
-        )}
-
-        <Grid item lg={12} md={6}>
-          <Paper
+          <Box
             sx={{
-              width: "100%",
-              height: "101%",
-              borderRadius: "10px",
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              margin: "30px",
             }}
-            variant="outlined"
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                margin: "30px",
-              }}
-            >
-              <Stack direction={"row"} alignItems={"center"}>
-                <Typography>Influenza Virus (H3N2) RTPCR - SWAB</Typography>
-              </Stack>
-              <Stack direction={"row"} alignItems={"center"} spacing={3}>
-                <Divider
-                  orientation="vertical"
-                  flexItem
-                  sx={{ margin: "0 16px" }}
-                />
-                <Typography>₹ 1600</Typography>
-                <Button
-                  type="submit"
-                  variant="outlined"
-                  sx={{ color: "#1778F2" }}
-                >
-                  Add
-                </Button>
-              </Stack>
-            </Box>
-            <Divider sx={{ margin: "5px" }} />
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                margin: "30px",
-              }}
-            >
-              <Stack direction={"row"} alignItems={"center"}>
-                <Typography>Influenza Virus (H3N2) RTPCR - SWAB</Typography>
-              </Stack>
-              <Stack direction={"row"} alignItems={"center"} spacing={3}>
-                <Divider
-                  orientation="vertical"
-                  flexItem
-                  sx={{ margin: "0 16px" }}
-                />
-                <Typography>₹ 1600</Typography>
-                <Button
-                  type="submit"
-                  variant="outlined"
-                  sx={{ color: "#1778F2" }}
-                >
-                  Add
-                </Button>
-              </Stack>
-            </Box>
-            <Divider />
-          </Paper>
+            <Button type="submit" variant="outlined" sx={{ color: "#1778F2" }}>
+              View More
+            </Button>
+          </Box>
         </Grid>
-        <Box
+      </Box>
+      {userdata?.testCart?.item.length > 0 ? (
+        <Button
           sx={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            margin: "30px",
+            color: "#ffff",
+            position: "fixed",
+            bottom: "20px",
+            right: "50px",
+            backgroundColor: "#1778F2",
+            width: "150px",
+            borderRadius: "10px",
+            "&:hover": {
+              backgroundColor: "#1261cc",
+            },
           }}
+          component={Link}
+          to={`/booktest/${id}`}
         >
-          <Button type="submit" variant="outlined" sx={{ color: "#1778F2" }}>
-            View More
-          </Button>
-        </Box>
-      </Grid>
-    </Box>
+          <StyledBadge
+            badgeContent={userdata?.testCart?.item.length}
+            color="secondary"
+          >
+            <ShoppingCartIcon />
+          </StyledBadge>
+          <span style={{ marginLeft: "20px" }}>
+            {userdata?.testCart?.item.length} Test
+          </span>
+        </Button>
+      ) : (
+        ""
+      )}
+    </>
   );
 };
 

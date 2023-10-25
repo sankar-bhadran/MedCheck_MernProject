@@ -29,19 +29,17 @@ import { updateProfile } from "../../redux/features/userSlice";
 import Addaddress from "../AddAddress/Addaddress";
 
 const UserProfile = () => {
-  const userdata = useSelector((state) => state.user?.userData);
-  const updateData = useSelector((state) => state.user);
+  const userdata = useSelector((state) => state.user?.Data);
+  const updateData = useSelector((state) => state.user.commonData);
   const addressData = useSelector((state) => state.user);
-  console.log("gotdata", userdata);
+  const addresses = useSelector((state) => state.user.Data);
 
   const dispatch = useDispatch();
-  // console.log("userdata", userdata);
   const [value, setValue] = React.useState(0);
+  const [userData, setUserData] = useState();
   useEffect(() => {
     setUserData(userdata);
   }, [userdata]);
-  const [userData, setUserData] = useState(userdata);
-  console.log("updated", userData);
 
   const [open, setOpen] = React.useState(false);
 
@@ -54,11 +52,11 @@ const UserProfile = () => {
 
   useEffect(() => {
     dispatch(getuser());
-  }, [updateData.actionStatus]);
+  }, [updateData]);
 
-  useEffect(() => {
-    dispatch(getuser());
-  }, [addressData.actionStatus]);
+  // useEffect(() => {
+  //   dispatch(getuser());
+  // }, [userData]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -224,9 +222,9 @@ const UserProfile = () => {
                       </Typography>
                     </Box>
                   </Grid>
-                  {userdata?.addressDetails &&
-                  userdata.addressDetails.length > 0 ? (
-                    userdata.addressDetails.map((address, index) => (
+                  {addresses?.addressDetails &&
+                  addresses.addressDetails.length > 0 ? (
+                    addresses.addressDetails.map((address, index) => (
                       <Grid item xs={12} md={4} key={index}>
                         <Box
                           sx={{
@@ -254,7 +252,7 @@ const UserProfile = () => {
                               {address.area}
                               <br />
                               {address.city},{address.state}
-                              <br/>
+                              <br />
                               {address.pincode}
                             </Typography>
                             <Stack

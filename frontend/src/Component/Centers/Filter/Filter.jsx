@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  FormControlLabel,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
@@ -7,20 +14,51 @@ import {
   searchDetails,
   getListingDetails,
 } from "../../../redux/features/CenterSlice";
-import { useDispatch } from "react-redux";
+import { getAllLocations } from "../../../redux/features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 import debounce from "lodash.debounce";
+import Checkbox from "@mui/material/Checkbox";
+const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const Filter = () => {
+  const [checked, setChecked] = React.useState();
+
+  const handleChanges = (event) => {
+    setChecked(event.target.checked);
+  };
+  const locations = useSelector((state) => state.user.locationData);
+  console.log("locations", locations);
   const [search, setSearch] = useState("");
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setSearch(e.target.value);
   };
+  const [selectedLocations, setSelectedLocations] = useState("");
+  console.log(" selectedLocations", selectedLocations);
+  const handleCheckboxClick = (place) => {
+    setSelectedLocations(place);
+  };
 
   useEffect(() => {
-    dispatch(searchDetails({search}))
-  }, [search]);
+    dispatch(searchDetails({ search, selectedLocations }));
+  }, [search, selectedLocations]);
+
+  useEffect(() => {
+    dispatch(getAllLocations());
+  }, []);
+
+  const handleCheckboxChange = (location) => {
+    // if (selectedLocations?.includes(place)) {
+    //   setSelectedLocations(selectedLocations.filter((item) => item !== place));
+    // } else {
+    //   setSelectedLocations([...selectedLocations, place]);
+    // }
+    location = selectedLocations === location ? '' : location
+    setSelectedLocations(location)
+  };
+
+  console.log("selectedLocations", selectedLocations);
 
   console.log("search", search);
   const Search = styled("div")(({ theme }) => ({
@@ -32,7 +70,7 @@ const Filter = () => {
     },
     marginLeft: 0,
     width: "100%",
-    border: "2px solid #c0c0c0", // Add this line to set the border color
+    border: "2px solid #c0c0c0",
     [theme.breakpoints.up("sm")]: {
       marginLeft: theme.spacing(1),
       width: "auto",
@@ -53,7 +91,6 @@ const Filter = () => {
     color: "inherit",
     "& .MuiInputBase-input": {
       padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
       paddingLeft: `calc(1em + ${theme.spacing(4)})`,
       transition: theme.transitions.create("width"),
       width: "100%",
@@ -95,20 +132,19 @@ const Filter = () => {
           },
           height: {
             md: "200px",
-            lg: "300px",
+            lg: "100%",
             sm: "300px",
             xs: "400px",
           },
           padding: "16px",
           borderRadius: "8px",
           boxShadow: "0 5px 5px rgba(0, 0, 0, 0.1)",
-          //   border: "1px solid #1778F2",
-          //   backgroundColor:'#F8F8F8',
+          // border: "1px solid #1778F2",
+          // backgroundColor:'#F8F8F8',
         }}
       >
-       
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Typography>Filters</Typography>
+          <Typography sx={{ color: "#828282" }}>Filters</Typography>
           <Typography sx={{ color: "#828282" }}>Clear All</Typography>
         </Box>
 
@@ -132,6 +168,38 @@ const Filter = () => {
             onChange={handleChange}
           />
         </Search>
+        <div
+          style={{
+            width: "100%",
+            height: "2px",
+            backgroundColor: "#c0c0c0",
+            margin: "10px auto",
+          }}
+        ></div>
+        <Typography sx={{ color: "#828282" }}>Locations</Typography>
+        <Grid container>
+          {locations?.[0].location?.map((data, index) => (
+            <Grid item mb={-1} key={data._id} lg={12}>
+              {/* {data.location.map((place, placeIndex) => ( */}
+              <Stack>
+                <FormControlLabel
+                  key={data}
+                  control={
+                    <Checkbox
+                      inputProps={{ "aria-label": "controlled" }}
+                      size="small"
+                      // onClick={() => handleCheckboxClick(place)}
+                      onChange={() => handleCheckboxChange(data)}
+                      checked={data === selectedLocations}
+                    />
+                  }
+                  label={data}
+                />
+              </Stack>
+              {/* ))} */}
+            </Grid>
+          ))}
+        </Grid>
       </Paper>
     </Box>
   );

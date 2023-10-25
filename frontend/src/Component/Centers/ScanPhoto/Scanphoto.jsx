@@ -89,15 +89,16 @@ const Scanphoto = ({ state, setState }) => {
                           padding: "16px",
                         }}
                       >
-                        {state?.image1 || state.CenterImages ? (
-                          <img
-                            style={{ width: 240, height: 240, padding: 22 }}
-                            src={
-                              typeof state.image1 == "object"
-                                ? URL.createObjectURL(state.image1)
-                                : `http://localhost:5000/images/${state.CenterImages[0]}`
-                            }
-                          />
+                        {state?.image1 ? (
+                          typeof state.image1 === "object" &&
+                          state.image1.type.startsWith("image/") ? (
+                            <img
+                              style={{ width: 240, height: 240, padding: 22 }}
+                              src={URL.createObjectURL(state.image1)}
+                            />
+                          ) : (
+                            <p>Image is not valid or not found</p>
+                          )
                         ) : (
                           <Typography
                             sx={{
@@ -110,7 +111,7 @@ const Scanphoto = ({ state, setState }) => {
                             }}
                             onClick={() => fileInputRef1.current.click()}
                           >
-                            + Add Photo
+                            + Add Photo 1
                           </Typography>
                         )}
                       </Paper>
@@ -150,15 +151,16 @@ const Scanphoto = ({ state, setState }) => {
                           padding: "16px",
                         }}
                       >
-                        {state?.image2 || state.CenterImages ? (
-                          <img
-                            style={{ width: 240, height: 240, padding: 22 }}
-                            src={
-                              typeof state.image2 == "object"
-                                ? URL.createObjectURL(state.image2)
-                                : `http://localhost:5000/images/${state.CenterImages[1]}`
-                            }
-                          />
+                        {state?.image2 ? (
+                          typeof state.image2 === "object" &&
+                          state.image2.type.startsWith("image/") ? (
+                            <img
+                              style={{ width: 240, height: 240, padding: 22 }}
+                              src={URL.createObjectURL(state.image2)}
+                            />
+                          ) : (
+                            <p>Image is not valid or not found</p>
+                          )
                         ) : (
                           <Typography
                             sx={{
@@ -171,7 +173,7 @@ const Scanphoto = ({ state, setState }) => {
                             }}
                             onClick={() => fileInputRef2.current.click()}
                           >
-                            + Add Photo
+                            + Add Photo 2
                           </Typography>
                         )}
                       </Paper>
@@ -211,15 +213,23 @@ const Scanphoto = ({ state, setState }) => {
                           padding: "16px",
                         }}
                       >
-                        {state?.image3 || state.CenterImages ? (
-                          <img
-                            style={{ width: 240, height: 240, padding: 22 }}
-                            src={
-                              typeof state.image3 == "object"
-                                ? URL.createObjectURL(state.image3)
-                                : `http://localhost:5000/images/${state.CenterImages[2]}`
-                            }
-                          />
+                        {state?.image3 ||
+                        (state.CenterImages && state.CenterImages[2]) ? (
+                          // Check if state.image3 is an object (a File object) and if its type starts with 'image/'
+                          typeof state.image3 === "object" &&
+                          state.image3.type.startsWith("image/") ? (
+                            <img
+                              style={{ width: 240, height: 240, padding: 22 }}
+                              src={URL.createObjectURL(state.image3)}
+                            />
+                          ) : state.CenterImages && state.CenterImages[2] ? (
+                            <img
+                              style={{ width: 240, height: 240, padding: 22 }}
+                              src={`http://localhost:5000/images/${state.CenterImages[2]}`}
+                            />
+                          ) : (
+                            <p>Image is not valid or not found</p>
+                          )
                         ) : (
                           <Typography
                             sx={{

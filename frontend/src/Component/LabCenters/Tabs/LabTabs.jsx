@@ -8,7 +8,6 @@ import AddLabTest from "../AddLab/AddLabTest";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
-   console.log("proppssss")
   return (
     <div
       role="tabpanel"
@@ -39,9 +38,8 @@ function a11yProps(index) {
   };
 }
 
-
-const LabTabs = ({labId}) => {
-    console.log("propss",labId)
+const LabTabs = ({ labId }) => {
+  console.log("propss", labId);
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -55,7 +53,7 @@ const LabTabs = ({labId}) => {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="ADD SCANS AND MRI" {...a11yProps(0)} />
+          <Tab label="ADD Lab Test" {...a11yProps(0)} />
           <Tab label="Add Time Slot" {...a11yProps(1)} />
           <Tab label="Item Three" {...a11yProps(2)} />
         </Tabs>

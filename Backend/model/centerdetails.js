@@ -35,9 +35,9 @@ const centerDetailSchema = new mongoose.Schema({
     required: true,
   },
 
-  Place:{
-    type:String,
-    required:true
+  Place: {
+    type: String,
+    required: true,
   },
 
   City: {
@@ -72,22 +72,32 @@ const centerDetailSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  
-  reject:{
-    type:Boolean,
-    default:false,
+
+  reject: {
+    type: Boolean,
+    default: false,
   },
 
-  rejectMessage:{
+  rejectMessage: {
+    type: String,
+  },
+
+  isContinue: {
+    type: Boolean,
+    default: false,
+  },
+
+  type:{
     type:String,
+    default: "ScanCentre",
+
   },
 
-  isContinue:{
-    type:Boolean,
-    default:false
-  }
-
-
+  createdAt: {
+    type: Date,
+    default:Date.now
+  },
+  
 });
 
 export default mongoose.model("centerdetail", centerDetailSchema);

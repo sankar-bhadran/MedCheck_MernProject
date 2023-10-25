@@ -61,8 +61,15 @@ export default function StickyHeadTable() {
   const { register, handleSubmit } = useForm();
 
   const onSubmit = (data) => {
+    const formData = new FormData();
     console.log("data", data);
-    dispatch(addCategory(data));
+    formData.append("file", data.file[0]);
+    formData.append("TestName", data.TestName);
+    data.subCategory.forEach((subCategory, index) => {
+      formData.append(`subCategory[${index}]`, subCategory);
+    });
+    console.log("formData", formData);
+    dispatch(addCategory(formData));
     handleClose();
   };
 
@@ -126,7 +133,7 @@ export default function StickyHeadTable() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {categorydata && Array.isArray(categorydata)  ? (
+            {categorydata && Array.isArray(categorydata) ? (
               categorydata
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((data) => (
@@ -225,11 +232,14 @@ export default function StickyHeadTable() {
                 sx={{ width: "100%" }}
               />
             ))}
+            <Box sx={{ marginTop: "20px" }}>
+              <input type="file" {...register("file")} />
+            </Box>
 
             <Button
               variant="outlined"
               onClick={() => setCount([...count, ""])}
-              sx={{ color: "#1778F2", fontWeight: "bold" }}
+              sx={{ color: "#1778F2", fontWeight: "bold", marginTop: "30px" }}
             >
               <AddCircleIcon sx={{ padding: 0.5 }} />
               Sub Category

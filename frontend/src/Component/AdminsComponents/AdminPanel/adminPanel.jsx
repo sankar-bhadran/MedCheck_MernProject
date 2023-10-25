@@ -202,11 +202,69 @@ export default function MiniDrawer() {
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText
-                primary="Lab Categorys"
+                primary="Scan Category"
                 sx={{ opacity: open ? 1 : 0 }}
               />
             </ListItemButton>
           </ListItem>
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => {
+              navigate("/labcategories");
+            }}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Lab Category"
+                sx={{ opacity: open ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem>
+          {/* <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => {
+              navigate("/scanpending");
+            }}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Scan Pending List"
+                sx={{ opacity: open ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem> */}
 
           <ListItem
             disablePadding
@@ -232,7 +290,7 @@ export default function MiniDrawer() {
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText
-                primary="Scan Approval List"
+                primary="Scan Approvel List"
                 sx={{ opacity: open ? 1 : 0 }}
               />
             </ListItemButton>
@@ -261,7 +319,36 @@ export default function MiniDrawer() {
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText
-                primary="Lab Approval List"
+                primary="Lab Approved List"
+                sx={{ opacity: open ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => {
+              navigate("/addlocation");
+            }}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="Add Location"
                 sx={{ opacity: open ? 1 : 0 }}
               />
             </ListItemButton>

@@ -5,6 +5,9 @@ const initialState = {
   loading: false,
   labStatus: false,
   labData: null,
+  commonData: null,
+  Data: null,
+  intialData:null,
   error: " ",
 };
 
@@ -40,7 +43,6 @@ export const getLabDetails = createAsyncThunk(
   async (centerid, { rejectWithValue }) => {
     try {
       const response = await axios.get(`labcenter/labviewdetails/${centerid}`);
-      console.log("sdfksbfd", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -73,12 +75,25 @@ export const LabReject = createAsyncThunk(
   }
 );
 
+export const labGetContinue = createAsyncThunk(
+  "labcenter/continuebutton",
+  async (_, { rejectWithValue }) => {
+    console.log("labGetContinue");
+
+    try {
+      const response = await axios.patch("labcenter/labonetimeapprovel");
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const allDetails = createAsyncThunk(
   "lab/alldetails",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get("labcenter/alldetails");
-      console.log("::", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -97,6 +112,55 @@ export const getLabListingDetail = createAsyncThunk(
     }
   }
 );
+
+export const getLabCategories = createAsyncThunk(
+  "labcenter/labcategories",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("labcenter/labcategorires");
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const addLabTest = createAsyncThunk(
+  "center/addlabtests",
+  async (data, { rejectWithValue }) => {
+    console.log("data", data);
+    try {
+      const response = await axios.post("labcenter/addlabtests", data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const getAllAddedTest = createAsyncThunk(
+  "lab/fetchalladdedtest",
+  async (centerid, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `labcenter/fetchalladdedtest/${centerid}`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getLabTest=createAsyncThunk('labcenter/getlabtest',async(formdata,{rejectWithValue})=>{
+  console.log("formdata",formdata)
+  try {
+    const response=await axios.get(`labcenter/getlabtest?category=${formdata.mainCategory}&labid=${formdata.labId}`)
+    console.log("response",response.data)
+    return response.data
+  } catch (error) {
+    return rejectWithValue(error.response.data)
+  }
+})
 
 const labSlice = createSlice({
   initialState,
@@ -188,12 +252,77 @@ const labSlice = createSlice({
 
       .addCase(getLabListingDetail.fulfilled, (state, action) => {
         state.labStatus = true;
-        state.labData=action.payload.lablisting
+        state.labData = action.payload.lablisting;
       })
 
       .addCase(getLabListingDetail.rejected, (state, action) => {
         state.error = action.error.message || "";
-      });
+      })
+
+      .addCase(labGetContinue.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(labGetContinue.fulfilled, (state, action) => {
+        state.loading = false;
+        state.labStatus = true;
+      })
+
+      .addCase(labGetContinue.rejected, (state, action) => {
+        state.error = action.error.message || "";
+      })
+
+      .addCase(getLabCategories.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(getLabCategories.fulfilled, (state, action) => {
+        state.labStatus = true;
+        state.commonData = action.payload.labCategories;
+      })
+
+      .addCase(getLabCategories.rejected, (state, action) => {
+        state.error = action.error.message || " ";
+      })
+
+      .addCase(addLabTest.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(addLabTest.fulfilled, (state, action) => {
+        state.labStatus = true;
+        state.Data = action.payload.fetcheddata;
+      })
+
+      .addCase(addLabTest.rejected, (state, action) => {
+        state.error = action.error.message || "";
+      })
+
+      .addCase(getAllAddedTest.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(getAllAddedTest.fulfilled, (state, action) => {
+        state.loading = false;
+        state.intialData = action.payload.fetcheddata;
+      })
+
+      .addCase(getAllAddedTest.rejected, (state, action) => {
+        state.error = action.error.message || " ";
+      })
+
+      .addCase(getLabTest.pending,(state,action)=>{
+        state.loading=true
+      })
+
+      .addCase(getLabTest.fulfilled,(state,action)=>{
+        state.loading=false
+        state.commonData=action.payload.fetcheddata
+      })
+
+      .addCase(getLabTest.rejected,(state,action)=>{
+        state.error=action.error.message || " "
+      })
   },
 });
 

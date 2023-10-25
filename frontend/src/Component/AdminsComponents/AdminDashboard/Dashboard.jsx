@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
 import AdminPanel from "../../../Pages/AdminPages/AdminPanel/adminPanel";
 import Navbar from "../AdminNavbar/Navbar";
@@ -11,8 +11,18 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import "../../../Dash.css";
+import { useDispatch, useSelector } from "react-redux";
+import { adminDashboard } from "../../../redux/features/admiSlice";
+import BarChart from "../../Chart/BarChart";
+import PieChart from "../../Chart/PieChart";
 
 const Dashboard = () => {
+  const dispatch = useDispatch();
+  const data = useSelector((state) => state.admin.Data);
+  console.log("count", data?.labSum);
+  useEffect(() => {
+    dispatch(adminDashboard());
+  }, []);
   return (
     <>
       <div style={{ backgroundColor: " #eceff1" }}>
@@ -33,14 +43,14 @@ const Dashboard = () => {
                         <CreditCardIcon />
                       </div>
                       <Typography gutterBottom variant="h5" component="div">
-                        $500
+                        {data?.scanCenterCount}
                       </Typography>
                       <Typography
                         variant="body2"
                         component="div"
                         sx={{ color: "#ccd1d1" }}
                       >
-                        Total Earnings
+                        Total Registered ScanCenter
                       </Typography>
                     </CardContent>
                   </Card>
@@ -53,14 +63,14 @@ const Dashboard = () => {
                         <ShoppingBagIcon />
                       </div>
                       <Typography gutterBottom variant="h5" component="div">
-                        $900
+                        {data?.labCenterCount}
                       </Typography>
                       <Typography
                         variant="body2"
                         component="div"
                         sx={{ color: "#ccd1d1" }}
                       >
-                        Total Orders
+                        Total Registered LabCenter
                       </Typography>
                     </CardContent>
                   </Card>
@@ -75,9 +85,11 @@ const Dashboard = () => {
                         <StorefrontIcon />
                       </div>
                       <div className="paddingall">
-                        <span className="pricetitle">$230k</span>
+                        <span className="pricetitle">₹ {data?.scanSum}</span>
                         <br />
-                        <span className="pricesubtitle">Total Income</span>
+                        <span className="pricesubtitle">
+                          ScanCentre Total Income
+                        </span>
                       </div>
                     </Stack>
                   </Card>
@@ -87,9 +99,9 @@ const Dashboard = () => {
                         <StorefrontIcon />
                       </div>
                       <div className="paddingall">
-                        <span className="pricetitle">$230k</span>
+                        <span className="pricetitle">₹ {data?.labSum}</span>
                         <br />
-                        <span className="pricesubtitle">Total Income</span>
+                        <span className="pricesubtitle"> LabCentre Total Income</span>
                       </div>
                     </Stack>
                   </Card>
@@ -100,12 +112,16 @@ const Dashboard = () => {
             <Grid container spacing={2}>
               <Grid item xs={8}>
                 <Card sx={{ height: 60 + "vh" }}>
-                  <CardContent></CardContent>
+                  <CardContent>
+                    <BarChart />
+                  </CardContent>
                 </Card>
               </Grid>
               <Grid item xs={4}>
                 <Card sx={{ height: 60 + "vh", width: 49 + "vh" }}>
-                  <CardContent></CardContent>
+                  <CardContent>
+                    <PieChart />
+                  </CardContent>
                 </Card>
               </Grid>
             </Grid>

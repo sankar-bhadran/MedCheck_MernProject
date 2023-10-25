@@ -13,6 +13,11 @@ const initialState = {
   logOut: null,
   error: null,
   phonenumber: "",
+  Data: null,
+  locationData: null,
+  commonData: null,
+  paymentState: null,
+  labData: null,
   userdata: {},
   userType: {},
 };
@@ -112,7 +117,7 @@ export const addaddress = createAsyncThunk(
   "user/addaddress",
   async (address, { rejectWithValue }) => {
     try {
-      const response = await axios.post("api/userprofile", address);
+      const response = await axios.post("api/addaddress", address);
       console.log(response);
       return response.data;
     } catch (error) {
@@ -134,21 +139,137 @@ export const addressDelete = createAsyncThunk(
   }
 );
 
-
-export const resendOtp=createAsyncThunk('user/resendotp',async(data,{rejectWithValue})=>{
-  try {
-    const response=await axios.post('api/resendotp',{data});
-    console.log(response.data)
-    return response.data
-  } catch (error) {
-    return rejectWithValue(error.response.data)
+export const resendOtp = createAsyncThunk(
+  "user/resendotp",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("api/resendotp", { data });
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
-})
+);
+
+export const addToCart = createAsyncThunk(
+  "user/addtocart",
+  async (id, { rejectWithValue }) => {
+    console.log("id", id);
+    try {
+      const response = await axios.post("api/addtocart", { id });
+      console.log("cartResponse", response);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const labAddToCart = createAsyncThunk(
+  "user/labAddToCart",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("api/labaddtocart", { id });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const removeFromCart = createAsyncThunk(
+  "user/removefromcart",
+  async (id, { rejectWithValue }) => {
+    console.log(id);
+    try {
+      const response = await axios.post("api/removefromcart", { id });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const labRemoveFromCart = createAsyncThunk(
+  "user/labremovfromcart",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("api/labremovfromcart", { id });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getScanCenterDetails = createAsyncThunk(
+  "user/scandetails",
+  async (centerid, { rejectWithValue }) => {
+    console.log("idid", centerid);
+    try {
+      const response = await axios.get(`api/scandetails/${centerid}`);
+      console.log("scanCenterDetails", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getLabCenterDetails = createAsyncThunk(
+  "user/labdetails",
+  async (centerid, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`api/labdetails/${centerid}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getAllLocations = createAsyncThunk(
+  "user/fetchlocations",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("api/fetchlocations");
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const orders = createAsyncThunk(
+  "user/paymentorders",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("api/paymentorders");
+      console.log("resposne", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const successPageDetails = createAsyncThunk(
+  "user/successpagedetail",
+  async (appointmentId, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`api/successpagedetail${appointmentId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 export const logout = createAsyncThunk("user/logout", async () => {
   try {
     const response = await axios.get("api/logout");
-    return response.data; // Return only the serializable data from the response
+    return response.data;
   } catch (error) {
     throw error.response.data;
   }
@@ -167,6 +288,10 @@ const userSlice = createSlice({
     clearError: (state, action) => {
       state.error = null;
       state.registerStatus = false;
+    },
+
+    clearPaymentState: (state, action) => {
+      state.paymentState = null;
     },
   },
   extraReducers: (builder) => {
@@ -280,7 +405,7 @@ const userSlice = createSlice({
 
       .addCase(getuser.fulfilled, (state, action) => {
         state.actionStatus = true;
-        state.userData = action.payload.user;
+        state.Data = action.payload.user;
       })
 
       .addCase(getuser.rejected, (state, action) => {
@@ -294,6 +419,7 @@ const userSlice = createSlice({
 
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.actionStatus = !state.actionStatus;
+        state.commonData = action.payload.userUpdate;
       })
 
       .addCase(updateProfile.rejected, (state, action) => {
@@ -306,6 +432,7 @@ const userSlice = createSlice({
 
       .addCase(addaddress.fulfilled, (state, action) => {
         state.actionStatus = !state.actionStatus;
+        state.commonData = action.payload.address;
       })
 
       .addCase(addaddress.rejected, (state, action) => {
@@ -318,25 +445,143 @@ const userSlice = createSlice({
 
       .addCase(addressDelete.fulfilled, (state, action) => {
         state.actionStatus = !state.actionStatus;
+        state.commonData = action.payload.deletedAddress;
       })
 
       .addCase(addressDelete.rejected, (state, action) => {
         state.error = action.error.message || " ";
       })
 
-      .addCase(resendOtp.pending,(state,action)=>{
-        state.loading=true
+      .addCase(resendOtp.pending, (state, action) => {
+        state.loading = true;
       })
 
-      .addCase(resendOtp.fulfilled,(state,action)=>{
-        state.registerStatus=true
+      .addCase(resendOtp.fulfilled, (state, action) => {
+        state.registerStatus = true;
       })
 
-      .addCase(resendOtp.rejected,(state,action)=>{
-        state.error=action.error.message || " " 
+      .addCase(resendOtp.rejected, (state, action) => {
+        state.error = action.error.message || " ";
       })
 
-      
+      .addCase(addToCart.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(addToCart.fulfilled, (state, action) => {
+        state.actionStatus = true;
+        state.Data = action.payload.userData;
+      })
+
+      .addCase(addToCart.rejected, (state, action) => {
+        state.error = action.error.message || " ";
+      })
+
+      .addCase(labAddToCart.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(labAddToCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Data = action.payload.userData;
+      })
+
+      .addCase(labAddToCart.rejected, (state, action) => {
+        state.error = action.error.message || "";
+      })
+
+      .addCase(removeFromCart.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(removeFromCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Data = action.payload.userData;
+      })
+
+      .addCase(removeFromCart.rejected, (state, action) => {
+        state.error = action.error.message || " ";
+      })
+
+      .addCase(labRemoveFromCart.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(labRemoveFromCart.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Data = action.payload.userData;
+      })
+
+      .addCase(labRemoveFromCart.rejected, (state, action) => {
+        state.error = action.error.message || "";
+      })
+
+      .addCase(getScanCenterDetails.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(getScanCenterDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.commonData = action.payload.scanCenterDetails;
+      })
+
+      .addCase(getScanCenterDetails.rejected, (state, action) => {
+        state.error = action.error.message || "";
+      })
+
+      .addCase(getLabCenterDetails.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(getLabCenterDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.commonData = action.payload.labCenterDetails;
+      })
+
+      .addCase(getLabCenterDetails.rejected, (state, action) => {
+        state.error = action.error.message || "";
+      })
+
+      .addCase(getAllLocations.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(getAllLocations.fulfilled, (state, action) => {
+        state.loading = false;
+        state.locationData = action.payload.fetchedlocations;
+      })
+
+      .addCase(getAllLocations.rejected, (state, action) => {
+        state.error = action.error.message || "";
+      })
+
+      .addCase(orders.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(orders.fulfilled, (state, action) => {
+        state.actionStatus = true;
+        state.paymentState = action.payload.data;
+        console.log("payload", state.paymentState);
+      })
+
+      .addCase(orders.rejected, (state, action) => {
+        state.error = action.error.message || " ";
+      })
+
+      .addCase(successPageDetails.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(successPageDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.commonData = action.payload.appointmentDetails;
+      })
+
+      .addCase(successPageDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || " ";
+      });
   },
 });
 
@@ -346,4 +591,5 @@ export const {
   setuserdetails,
   clearError,
   clearRegisterStatus,
+  clearPaymentState,
 } = userSlice.actions;

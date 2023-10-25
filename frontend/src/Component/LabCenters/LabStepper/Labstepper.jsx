@@ -32,9 +32,6 @@ const Labstepper = () => {
     return skipped.has(step);
   };
 
-
-
-
   const handleNext = () => {
     let newSkipped = skipped;
     if (isStepSkipped(activeStep)) {
@@ -52,8 +49,6 @@ const Labstepper = () => {
 
 
   const handleSubmit = () => {
-    // console.log("CENTERDATA", centersData);
-    // console.log("centersData.isreject", centersData.isreject);
     handleNext();
     const formData = new FormData();
     // for (const key in centersData) {

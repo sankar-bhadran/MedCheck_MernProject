@@ -63,7 +63,7 @@ export default function HorizontalLinearStepper() {
     // }
     for (const key in centersData) {
       if (centersData.hasOwnProperty(key)) {
-        if (key === 'CertificateImages') {
+        if (key === "CertificateImages") {
           centersData[key].forEach((certificate, index) => {
             for (const certKey in certificate) {
               if (certificate.hasOwnProperty(certKey)) {

@@ -1,8 +1,12 @@
 import User from "../model/User.js";
 import Category from "../model/categoryModel.js";
+import Location from "../model/locationModel.js";
+import LabCategory from "../model/labcategoryModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import centerdetails from "../model/centerdetails.js";
+import Appointments from "../model/appointmentModel.js";
+import labDetails from "../model/labdetails.js";
 import nodemailer from "nodemailer";
 import Mailgen from "mailgen";
 export const adminlogin = async (req, res) => {
@@ -42,21 +46,17 @@ export const adminlogin = async (req, res) => {
 
 export const addCategory = async (req, res) => {
   const { TestName, subCategory } = req.body;
-  console.log(req.body);
-  console.log(TestName);
-  console.log(subCategory);
   // let categoryData;
   try {
     const categoryData = await Category.findOne({ Testname: TestName });
-    // if (categoryData) {
-    //   return res.status(400).json({ message: "Category already Exists" });
-    // }
+    if (categoryData) {
+      return res.status(400).json({ message: "Category already Exists" });
+    }
     const category = new Category({
       Testname: TestName,
       sub: { name: subCategory },
     });
     await category.save();
-    console.log("category", category);
     return res.status(200).json({ message: "Category Added", category });
   } catch (error) {
     console.log(error.message);
@@ -155,7 +155,7 @@ export const getCenterDetails = async (req, res) => {
     const centerDetails = await centerdetails
       .findById(centerid)
       .populate("owner");
-    // console.log("centerDetails", centerDetails);
+    console.log("centerDetails", centerDetails);
     if (!centerDetails) {
       return res.status(404).json({ message: "Center not found" });
     }
@@ -170,8 +170,6 @@ export const getCenterDetails = async (req, res) => {
 
 export const availableCategory = async (req, res) => {
   const { isAvailable } = req.body;
-  console.log(req.body);
-  console.log("categoryId", isAvailable);
   let categoryId = isAvailable;
   try {
     const category = await Category.findById(categoryId);
@@ -271,15 +269,14 @@ export const centerreject = async (req, res) => {
   const { rejectreason, id } = req.body;
   console.log("req.body", rejectreason);
   try {
-      await centerdetails
-      .findOneAndUpdate(
-        { _id: id },
-        { $set: { reject: true, rejectMessage: rejectreason } }
-      )
-      
-    const details=await centerdetails.findById({_id:id}).populate("owner");
+    await centerdetails.findOneAndUpdate(
+      { _id: id },
+      { $set: { reject: true, rejectMessage: rejectreason } }
+    );
+
+    const details = await centerdetails.findById({ _id: id }).populate("owner");
     console.log("dsfsfsdkajhaskdjh", details);
-    console.log("message",details.rejectMessage)
+    console.log("message", details.rejectMessage);
     if (details.reject) {
       let currentDate = new Date();
       let formattedDate = currentDate.toDateString();
@@ -331,11 +328,125 @@ export const centerreject = async (req, res) => {
         }
       });
     }
-    return res
-      .status(200)
-      .json({ message: "Reject successfully", details });
+    return res.status(200).json({ message: "Reject successfully", details });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const addLocation = async (req, res) => {
+  try {
+    const { PlaceName } = req.body;
+    console.log("placename", PlaceName);
+    await Location.updateOne(
+      { _id: "651cfa3872cf55ab95b6a82f" },
+      { $push: { location: PlaceName } }
+    );
+    const addedLocation = await Location.find();
+    console.log("addedLoction", addedLocation);
+    return res.status(200).json({ message: "location stored", addedLocation });
+  } catch (error) {
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const fetchallLocation = async (req, res) => {
+  try {
+    const allLocationDetails = await Location.find();
+    return res.status(200).json({
+      message: "locations data fetch successfuly",
+      allLocationDetails,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const scanPendingList = async (req, res) => {
+  try {
+    const pendingList = await centerdetails.find({ isVerified: false });
+    return res
+      .status(200)
+      .json({ pendingList, message: "data fetch successfuly" });
+  } catch (error) {
+    return res.status(500).json({ message: "Server Error" });
+  }
+};
+
+export const addLabCategory = async (req, res) => {
+  const { TestName } = req.body;
+  console.log("labcategoryname", TestName);
+  try {
+    const labCategoryData = await LabCategory.findOne({ Testname: TestName });
+    if (labCategoryData) {
+      return res.status(400).json({ message: "Category already Exists" });
+    }
+    const labCategory = new LabCategory({
+      Testname: TestName,
+    });
+    await labCategory.save();
+    return res.status(200).json({ message: "Category Added", labCategory });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const viewLabCategory = async (req, res) => {
+  try {
+    const labcategorydata = await LabCategory.find();
+    return res
+      .status(200)
+      .json({ message: "successful fetch", labcategorydata });
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching data" });
+  }
+};
+
+export const adminDashboard = async (req, res) => {
+  let todayLabsum = 0;
+  let todayScanSum = 0;
+  try {
+    const scanCenterCount = await centerdetails.countDocuments({
+      isVerified: true,
+    });
+    const labCenterCount = await labDetails.countDocuments({
+      isVerified: true,
+    });
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+    const day = currentDate.getDate().toString().padStart(2, "0");
+    const formattedDate = `${year}-${month}-${day}`;
+    const type = await Appointments.find({
+      type: "LabCentre",
+      bookedDate: formattedDate,
+    });
+    const prices = type.map(
+      (appointment) => appointment.testDetails.totalPrice
+    );
+    todayLabsum = prices.reduce((acc, price) => acc + price, 0);
+
+    const Scantype = await Appointments.find({
+      type: "ScanCentre",
+      bookedDate: formattedDate,
+    });
+    console.log("ScanType",Scantype)
+    const Scanprices = Scantype.map(
+      (appointment) => appointment.testDetails.totalPrice
+    );
+    todayScanSum = Scanprices.reduce((acc, price) => acc + price, 0);
+
+    const dashboarddata = {
+      scanCenterCount: scanCenterCount,
+      labCenterCount: labCenterCount,
+      labSum: todayLabsum,
+      scanSum:todayScanSum 
+    };
+    return res
+      .status(200)
+      .json({ message: "successful fetch", dashboardData: dashboarddata });
+  } catch (error) {
+    return res.status(500).json({ message: "Error fetching data" });
   }
 };
 

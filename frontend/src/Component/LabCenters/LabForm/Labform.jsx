@@ -18,7 +18,6 @@ const Labform = ({ state, setState }) => {
       [name]: value,
     }));
   };
-  console.log(state);
   return (
     <>
       <Grid container>

@@ -19,16 +19,26 @@ import Dashboard from "./Component/AdminsComponents/AdminDashboard/Dashboard";
 import Centerhomepage from "./Pages/Centers/HomePage/CenterHomePage";
 import Adminauth from "./Component/AdminsComponents/AdminAuth/Adminauth";
 import AuthComponent from "./Component/AuthComponent/AuthComponent";
-import Labregistration from './Pages/Centers/LabRegistration/Labregistration';
+import Labregistration from "./Pages/Centers/LabRegistration/Labregistration";
 import Scanregistration from "./Pages/Centers/ScanRegistration/Scanregistration";
 import Reapply from "./Pages/Centers/Stepper/Stepper";
 import ListingPage from "./Pages/Centers/ListingPage/ListingPage";
 import ScanDetailPage from "./Pages/Centers/ScanDetailPage/ScanDetailPage";
 import UserRoutes from "./Component/Routes/userRoutes";
 import CenterRoutes from "./Component/Routes/centerRoutes";
-import Labdetails from './Pages/AdminPages/AdminLabDetails/LabList'
-import LabDetailPage from './Pages/AdminPages/LabDetails/Labdetailpage'
+import Labdetails from "./Pages/AdminPages/AdminLabDetails/LabList";
+import LabDetailPage from "./Pages/AdminPages/LabDetails/Labdetailpage";
 import LabListingPage from "./Pages/Centers/LabListingPage/LabListingPage";
+import Addlocation from "./Pages/AdminPages/AddLocation/Addlocation";
+import ScanPendingList from "./Pages/AdminPages/ScanPending/ScanPendingList";
+import Booking from "./Pages/Centers/CartStepper/Cartstepper";
+import LabBooking from "./Pages/Centers/LabCartStepper/CartStepper";
+import LabCategory from "./Pages/AdminPages/AdminLabCategories/LabCategory";
+import OrderComfirmationPage from "./Pages/OrderConfirmation/OrderComfirmationPage";
+import LabDetailPages from "./Pages/Centers/LabDetailPage/LabDetailPage";
+import ErrorPage from "./Pages/ErrorPage/MainErrorPage";
+import UserTabs from './Pages/userTab/UserTabs'
+
 
 function App() {
   return (
@@ -43,10 +53,15 @@ function App() {
         <Route path="/" element={<Userhome />} />
 
         <Route element={<UserRoutes />}>
-          <Route path="/userprofile" element={<UserprofilePage />} />
+          <Route path="/userprofile" element={< UserprofilePage  />} />
           <Route path="/customer" element={<ListingPage />} />
           <Route path="/labcustomer" element={<LabListingPage />} />
           <Route path="/detailpage/:id" element={<ScanDetailPage />} />
+          <Route path="/labdetailpage/:id" element={<LabDetailPages />} />
+          <Route path="/booktest/:id" element={<Booking />} />
+          <Route path="/booklabtest/:id" element={<LabBooking />} />
+
+          <Route path="/orderconfirm/:id" element={<OrderComfirmationPage />} />
         </Route>
 
         <Route element={<CenterRoutes />}>
@@ -66,7 +81,11 @@ function App() {
           <Route path="/CenterDetails" element={<TestDetails />} />
           <Route path="/labdetail" element={<Labdetails />} />
           <Route path="/labviewdetails/:id" element={<LabDetailPage />} />
+          <Route path="/addlocation" element={<Addlocation />} />
+          <Route path="/scanpending" element={<ScanPendingList />} />
+          <Route path="/labcategories" element={<LabCategory />} />
         </Route>
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </div>
   );

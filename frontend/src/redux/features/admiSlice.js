@@ -42,12 +42,40 @@ export const addCategory = createAsyncThunk(
   }
 );
 
+export const labaddCategory = createAsyncThunk(
+  "admin/labaddcategory",
+  async (labcategorydata, { rejectWithValue }) => {
+    console.log("123456", labcategorydata);
+    try {
+      const response = await axios.post(
+        "admin/labaddcategory",
+        labcategorydata
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const getData = createAsyncThunk(
   "admin/admingetData",
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get("admin/admincategories");
       console.log(response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getLabCategory = createAsyncThunk(
+  "admin/labcategorydata",
+  async (_, rejectWithValue) => {
+    try {
+      const response = await axios.get("admin/labcategorydata");
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -203,6 +231,56 @@ export const centerreject = createAsyncThunk(
     console.log("data", data);
     try {
       const response = await axios.patch("admin/centerreject", data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const addLocation = createAsyncThunk(
+  "admin/centeraddlocation",
+  async (data, { rejectWithValue }) => {
+    console.log("123456", data);
+    try {
+      const response = await axios.post("admin/addloaction", data);
+      console.log("response", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const fetchallLocation = createAsyncThunk(
+  "admin/centerfetchalllocation",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("admin/fetchalllocation");
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const scanPendingList = createAsyncThunk(
+  "admin/scanPendinglist",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("admin/scanpendinglist");
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const adminDashboard = createAsyncThunk(
+  "admin/dashboarddata",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("admin/dashboarddata");
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -427,6 +505,86 @@ const adminslice = createSlice({
 
       .addCase(centerreject.rejected, (state, action) => {
         state.error = action.error.message || " ";
+      })
+
+      .addCase(addLocation.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(addLocation.fulfilled, (state, action) => {
+        state.loading = false;
+        state.adminActionStatus = true;
+        state.Data = action.payload.addedLocation;
+      })
+
+      .addCase(addLocation.rejected, (state, action) => {
+        state.error = action.error.message || " ";
+      })
+
+      .addCase(fetchallLocation.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(fetchallLocation.fulfilled, (state, action) => {
+        state.loading = false;
+        state.adminActionStatus = true;
+        state.Data = action.payload.allLocationDetails;
+      })
+
+      .addCase(fetchallLocation.rejected, (state, action) => {
+        state.error = action.error.message || " ";
+      })
+
+      .addCase(scanPendingList.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(scanPendingList.fulfilled, (state, action) => {
+        state.Data = action.payload.pendingList;
+      })
+
+      .addCase(scanPendingList.rejected, (state, action) => {
+        state.error = action.error.message || " ";
+      })
+
+      .addCase(labaddCategory.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(labaddCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.adminActionStatus = true;
+      })
+
+      .addCase(labaddCategory.rejected, (state, action) => {
+        state.error = action.error.message || " ";
+      })
+
+      .addCase(getLabCategory.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(getLabCategory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Data = action.payload.labcategorydata;
+      })
+
+      .addCase(getLabCategory.rejected, (state, action) => {
+        state.error = action.error.message || " ";
+      })
+
+      .addCase(adminDashboard.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(adminDashboard.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Data = action.payload.dashboardData;
+        console.log("srara", state.Data);
+      })
+
+      .addCase(adminDashboard.rejected, (state, action) => {
+        state.error = action.error.message || "";
       });
   },
 });

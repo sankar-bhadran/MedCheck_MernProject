@@ -11,15 +11,12 @@ import { getScanDetails } from "../../../redux/features/CenterSlice";
 
 const Scanregistration = () => {
   const dispatch = useDispatch();
-  const user = JSON.parse(localStorage.getItem("existinguser"));
-  console.log("user", user);
-  console.log("id", user._id);
   const centerData = useSelector((state) => state.center.Centerdata);
-  console.log("centerData", centerData);
-  console.log(centerData?.isSubmitted);
-  console.log(centerData?._id);
-  console.log(centerData?.isVerified);
-  console.log("reject", centerData?.isreject);
+  // console.log("centerData", centerData);
+  // console.log(centerData?.isSubmitted);
+  // console.log(centerData?._id);
+  // console.log(centerData?.isVerified);
+  // console.log("reject", centerData?.isreject);
   console.log("isContinue", centerData?.isContinue);
 
   useEffect(() => {

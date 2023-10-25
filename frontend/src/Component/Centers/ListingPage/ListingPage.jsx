@@ -34,7 +34,7 @@ const ListingPage = () => {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getListingDetails());
+    dispatch(searchDetails());
   }, []);
 
   const listingdetails = useSelector((state) => state.center.Centerdata);

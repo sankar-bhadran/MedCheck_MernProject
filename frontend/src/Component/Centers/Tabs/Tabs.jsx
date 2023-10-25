@@ -5,10 +5,12 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import AddTest from "../AddScan/AddScan";
+import ScanBookings from "../ScanBookings/Bookings";
+import AddSlot from "../AddSlot/AddSlot";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
-   console.log("proppssss")
+  console.log("proppssss");
   return (
     <div
       role="tabpanel"
@@ -39,8 +41,8 @@ function a11yProps(index) {
   };
 }
 
-export default function BasicTabs({labId}) {
-  console.log("propss",labId)
+export default function BasicTabs({ labId }) {
+  console.log("propss", labId);
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -56,21 +58,18 @@ export default function BasicTabs({labId}) {
           aria-label="basic tabs example"
         >
           <Tab label="ADD SCANS AND MRI" {...a11yProps(0)} />
-          <Tab
-            label="Add Time Slot"
-            {...a11yProps(1)}
-          />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          <Tab label="Bookings   " {...a11yProps(1)} />
+          <Tab label="Add Slot" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <AddTest  centerId={labId}  />
+        <AddTest centerId={labId} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        Add Time Slot
+        <ScanBookings centerId={labId} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        Item Three
+        <AddSlot />
       </CustomTabPanel>
     </Box>
   );

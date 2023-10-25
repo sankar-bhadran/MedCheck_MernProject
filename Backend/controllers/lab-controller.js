@@ -1,4 +1,6 @@
 import labdetails from "../model/labdetails.js";
+import labcategory from "../model/labcategoryModel.js";
+import labTestModel from "../model/labtestModel.js";
 import nodemailer from "nodemailer";
 import Mailgen from "mailgen";
 
@@ -192,27 +194,24 @@ export const LabReject = async (req, res) => {
         }
       });
     }
-    return res
-    .status(200)
-    .json({ message: "Reject successfully", details });
+    return res.status(200).json({ message: "Reject successfully", details });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
-
   }
 };
 
-export const fetchLabDetails=async(req,res)=>{
-  const id =req.user
+export const fetchLabDetails = async (req, res) => {
+  const id = req.user;
   try {
-    const labCenter=await labdetails.findOne({owner:id}).populate("owner")
-    const sendData={
-       isSubmitted:labCenter.isSubmitted,
-       isVerified:labCenter.isVerified,
-       isreject:labCenter.reject,
-       message:labCenter.rejectMessage,
-       isContinue:labCenter.isContinue,
-       ...labCenter._doc,
-    }
+    const labCenter = await labdetails.findOne({ owner: id }).populate("owner");
+    const sendData = {
+      isSubmitted: labCenter.isSubmitted,
+      isVerified: labCenter.isVerified,
+      isreject: labCenter.reject,
+      message: labCenter.rejectMessage,
+      isContinue: labCenter.isContinue,
+      ...labCenter._doc,
+    };
     return res.status(200).json({
       sendData,
       message: "data fetched successfull..!",
@@ -220,18 +219,98 @@ export const fetchLabDetails=async(req,res)=>{
   } catch (error) {
     return res.status(400).json({ message: "Something went wrong" });
   }
-}
+};
 
-export const lablistingdetails=async(req,res)=>{
+export const lablistingdetails = async (req, res) => {
   try {
-    const lablisting=await labdetails.find({isVerified:true});
-    return res.status(200).json({lablisting,message:"data fetched successfully"})
+    const lablisting = await labdetails.find({ isVerified: true });
+    return res
+      .status(200)
+      .json({ lablisting, message: "data fetched successfully" });
   } catch (error) {
-    return res.status(400).json({message:"something went wrong"})
-    
+    return res.status(400).json({ message: "something went wrong" });
   }
-}
+};
 
+export const labContinueTrue = async (req, res) => {
+  const id = req.user;
+
+  try {
+    const Labdetails = await labdetails.findOneAndUpdate(
+      { owner: id },
+      { $set: { isContinue: true } }
+    );
+    return res
+      .status(200)
+      .json({ message: "Continue Successfully", Labdetails });
+  } catch (error) {
+    return res.status(400).json({ message: "something went wrong" });
+  }
+};
+
+export const getLabCategories = async (req, res) => {
+  try {
+    const labCategories = await labcategory.find();
+    return res
+      .status(200)
+      .json({ labCategories, message: "data fetched successfully" });
+  } catch (error) {
+    return res.status(400).json({ message: "something went wrong" });
+  }
+};
+
+export const addlabtest = async (req, res) => {
+  const { mainCategory, testDetails, price, centerID } = req.body;
+  try {
+    const addedlabtests = new labTestModel({
+      Lab: centerID,
+      LabOwnerId: req.user,
+      mainCategory,
+      description: testDetails,
+      price,
+    });
+    await addedlabtests.save();
+    const fetcheddata = await labTestModel.find({ Lab: centerID });
+    return res
+      .status(200)
+      .json({ message: "TestAdded Successfully", fetcheddata });
+  } catch (error) {
+    return res.status(400).json({ message: "somthing went wrong" });
+  }
+};
+
+export const getAddedTest = async (req, res) => {
+  const id = req.params.centerid;
+  console.log("id", id);
+  try {
+    const fetcheddata = await labTestModel.find({ Lab: id });
+    if (fetcheddata.length === 0) {
+      return res.status(404).json({ message: "No data found" });
+    }
+    return res
+      .status(200)
+      .json({ fetcheddata, message: "data fetched successfully" });
+  } catch (error) {
+    console.error("Error in searchDetails:", error);
+  }
+};
+
+export const getLabTest = async (req, res) => {
+  console.log("req.query", req.query);
+  console.log("req.query", req.query.category);
+  try {
+    const fetcheddata = await labTestModel.find({
+      mainCategory: req.query.category,
+      Lab: req.query.labid,
+    });
+    console.log("fetchedata",fetcheddata)
+    return res
+      .status(200)
+      .json({ fetcheddata, message: "data fetched successfully" });
+  } catch (error) {
+    return res.status(400).json({ message: "somthing went wrong" });
+  }
+};
 
 
 

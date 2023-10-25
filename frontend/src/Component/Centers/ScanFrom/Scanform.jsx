@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Grid,
@@ -8,10 +8,16 @@ import {
   Container,
   Divider,
   Button,
+  Autocomplete,
 } from "@mui/material";
 import TextField from "@mui/material/TextField";
+import { getAllLocations } from "../../../redux/features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Scanform = ({ state, setState }) => {
+  const locations = useSelector((state) => state.user.locationData);
+  console.log("locations", locations);
+  const dispatch = useDispatch();
   const handleChange = (event) => {
     const { name, value } = event.target;
     setState((prevUserData) => ({
@@ -19,6 +25,10 @@ const Scanform = ({ state, setState }) => {
       [name]: value,
     }));
   };
+
+  useEffect(() => {
+    dispatch(getAllLocations());
+  }, []);
 
   console.log(state);
   return (
@@ -192,15 +202,28 @@ const Scanform = ({ state, setState }) => {
                       fullWidth
                       sx={{ marginBottom: "10px" }}
                     />
-                    <TextField
-                      id="outlined-basic"
-                      onChange={handleChange}
-                      value={state.City}
-                      name="City"
-                      label="City"
-                      variant="outlined"
-                      fullWidth
+                    <Autocomplete
+                      disablePortal
+                      id="combo-box-category"
+                      getOptionLabel={(option) => option}
+                      options={
+                        locations
+                          ? locations
+                              .map((category) => category.location)
+                              .flat()
+                          : []
+                      }
+                      value={state.Place} // Set the value explicitly
+                      onChange={(event, newValue) => {
+                        setState((prevUserData) => ({
+                          ...prevUserData,
+                          City: newValue,
+                        }));
+                      }}
                       sx={{ marginBottom: "10px" }}
+                      renderInput={(params) => (
+                        <TextField {...params} label="City" name="City" />
+                      )}
                     />
                     <TextField
                       id="outlined-basic-1"

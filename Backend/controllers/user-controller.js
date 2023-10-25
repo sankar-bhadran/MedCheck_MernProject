@@ -1,14 +1,22 @@
 import User from "../model/User.js";
+import appointmentModel from "../model/appointmentModel.js";
+import ScanCenter from "../model/centerdetails.js";
+import LabCenter from "../model/labdetails.js";
+import Location from "../model/locationModel.js";
 import Address from "../model/addressModel.js";
+import LabTestModel from "../model/labtestModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import twilio from "twilio";
 import nodemailer from "nodemailer";
 import Mailgen from "mailgen";
+import Razorpay from "razorpay";
+import crypto from "crypto";
 import { OAuth2Client } from "google-auth-library";
-const accountSid = "AC335fa87eb66f78223c2a1240cedc0a3b";
-const authToken = "9fbb34f58d1aaa1a9014fb18bfe531f4";
-const servicessid = "VAf5818e4f455d71516d14c6b86c1b67ed";
+import testModel from "../model/testModel.js";
+const accountSid = "AC6ffd98d07b09c3795988fca455810836";
+const authToken = "e667ea90d9fc4f925dfc0557ef214bd1";
+const servicessid = "VA6a2a14ec6072a70983306c795d3c2737";
 const client = twilio(accountSid, authToken);
 
 // const API_KEY = process.env.MAILGUN_KEY;
@@ -29,11 +37,11 @@ export const sendotp = async (req, res) => {
         .json({ message: "User already exist!Login instead" });
     } else {
       console.log("else case");
-      // const otpResponse = "1234";
-      const otpResponse = await client.verify.v2
-        .services(servicessid)
-        .verifications.create({ to: `+91${phonenumber}`, channel: "sms" });
-      console.log(otpResponse);
+      const otpResponse = "1234";
+      // const otpResponse = await client.verify.v2
+      //   .services(servicessid)
+      //   .verifications.create({ to: `+91${phonenumber}`, channel: "sms" });
+      // console.log(otpResponse);
       res.status(200).send(`OTP successful: ${JSON.stringify(otpResponse)}`);
     }
   } catch (error) {
@@ -123,14 +131,14 @@ export const verifyotp = async (req, res, next) => {
   const { otp, phonenumber } = req.body;
 
   try {
-    // const verifiedResponse = {};
-    // verifiedResponse.status = otp === "1234" ? "approved" : "";
-    const verifiedResponse = await client.verify.v2
-      .services(servicessid)
-      .verificationChecks.create({
-        to: `+91${phonenumber}`,
-        code: otp,
-      });
+    const verifiedResponse = {};
+    verifiedResponse.status = otp === "1234" ? "approved" : "";
+    // const verifiedResponse = await client.verify.v2
+    //   .services(servicessid)
+    //   .verificationChecks.create({
+    //     to: `+91${phonenumber}`,
+    //     code: otp,
+    //   });
     if (verifiedResponse.status === "approved") {
       next();
     } else {
@@ -247,8 +255,6 @@ export const forgotpassword = async (req, res) => {
       } else {
         res.status(200).json({ message: "email sent successfully" });
         console.log("email sent successfully");
-
-
       }
     });
   } catch (error) {
@@ -288,8 +294,6 @@ export const getuser = async (req, res) => {
     }
 
     user = await User.findById({ _id: userid }).populate("addressDetails");
-
-    console.log("UserData", user);
   } catch (error) {
     console.log(error.message);
   }
@@ -305,7 +309,9 @@ export const updateProfile = async (req, res) => {
       $set: { username, email, phonenumber },
     });
     console.log(userUpdate);
-    return res.status(200).json({ message: "Profile Updated Successfully" });
+    return res
+      .status(200)
+      .json({ message: "Profile Updated Successfully", userUpdate });
   } catch (error) {
     console.log(error.message);
   }
@@ -325,12 +331,15 @@ export const address = async (req, res) => {
       defaultaddress: defaultaddress,
     });
     const address = await addressData.save();
+    const addedAddress = await Address.findOne({ userID: userid });
     await User.updateOne(
       { _id: userid },
       { $push: { addressDetails: address._id } }
     );
     console.log("addressData", address);
-    return res.status(201).json({ message: "Address added successfully" });
+    return res
+      .status(201)
+      .json({ message: "Address added successfully", address });
   } catch (error) {
     console.log(error.message);
     return res
@@ -344,12 +353,15 @@ export const deleteAddress = async (req, res) => {
 
   try {
     const deletedAddress = await Address.findByIdAndDelete({ _id: addressId });
+    const fetchAddress = await Address.findById({ _id: addressId });
 
     if (!deletedAddress) {
       return res.status(404).json({ message: "Address not found" });
     }
 
-    return res.status(200).json({ message: "Address deleted successfully" });
+    return res
+      .status(200)
+      .json({ message: "Address deleted successfully", deletedAddress });
   } catch (error) {
     console.error("Error deleting address:", error);
     return res
@@ -358,10 +370,208 @@ export const deleteAddress = async (req, res) => {
   }
 };
 
+export const addToCart = async (req, res) => {
+  try {
+    const { id } = req.body;
+    console.log(req.body);
+    console.log("addtocart req.body", id);
+    const userid = req.user;
+    console.log("userid", userid);
+    const userData = await User.findById({ _id: userid });
+    const testData = await testModel.findById({ _id: id });
+    userData.addToCart(testData);
+    return res.status(200).json({ userData, message: "Added To cart" });
+  } catch (error) {
+    console.error("Error in searchDetails:", error);
+  }
+};
+
+export const labAddToCart = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const userid = req.user;
+    const userData = await User.findById({ _id: userid });
+    const testData = await LabTestModel.findById({ _id: id });
+    userData.addToCart(testData);
+    return res.status(200).json({ userData, message: "Added To Cart" });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const removeFromCart = async (req, res) => {
+  try {
+    const { id } = req.body;
+    console.log(req.body);
+    console.log("addtocart req.body", id);
+    const userid = req.user;
+    const userData = await User.findById({ _id: userid });
+    console.log("userData", userData);
+
+    await userData.removefromCart(id);
+    console.log("removecart", userData.testCart.item);
+    return res.status(200).json({ userData, message: "Removed from cart" });
+  } catch (error) {
+    console.error("Error in searchDetails:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const labRemoveFromCart = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const userid = req.user;
+    const userData = await User.findById({ _id: userid });
+    await userData.labRemovefromCart(id);
+    return res.status(200).json({ userData, message: "Removed from Cart" });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const scanCenterDetails = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const scanCenterDetails = await ScanCenter.findById({ _id: id });
+    return res
+      .status(200)
+      .json({ scanCenterDetails, message: "Data fetched Successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const labCenterDetails = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const labCenterDetails = await LabCenter.findById({ _id: id });
+    return res
+      .status(200)
+      .json({ labCenterDetails, message: "Data fetched Successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const fetchLocations = async (req, res) => {
+  try {
+    const fetchedlocations = await Location.find();
+    return res
+      .status(200)
+      .json({ fetchedlocations, message: "Data fetched successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const orders = async (req, res) => {
+  const userid = req.user;
+  console.log("is", userid);
+  try {
+    const userData = await User.findOne({ _id: userid });
+    const totalPrice = userData.testCart.totalPrice;
+    const instance = new Razorpay({
+      key_id: process.env.KEY_ID,
+      key_secret: process.env.KEY_SECRET,
+    });
+
+    const options = {
+      amount: totalPrice * 100,
+      currency: "INR",
+      receipt: crypto.randomBytes(10).toString("hex"),
+    };
+
+    instance.orders.create(options, (error, order) => {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Something Went Wrong!" });
+      }
+      res.status(200).json({ data: order });
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error!" });
+    console.log(error);
+  }
+};
+
+export const verifypayment = async (req, res) => {
+  const userid = req.user;
+  try {
+    console.log("req.body", req.body);
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      id,
+      patientname,
+      dateOfbirth,
+      gender,
+      date,
+      slot,
+      mobilenumber,
+      email,
+    } = req.body;
+    const sign = razorpay_order_id + "|" + razorpay_payment_id;
+    const expectedSign = crypto
+      .createHmac("sha256", process.env.KEY_SECRET)
+      .update(sign.toString())
+      .digest("hex");
+
+    if (razorpay_signature === expectedSign) {
+      const userData = await User.findById({ _id: userid });
+      const completeCartItems = await userData.populate("testCart.item.TestId");
+      let types;
+      const centerstype = await ScanCenter.findById({ _id: id });
+      if (centerstype) {
+        types = centerstype.type;
+      } else {
+        const labtype = await LabCenter.findById({ _id: id });
+        types = labtype.type;
+      }
+
+      const appointments = new appointmentModel({
+        labId: id,
+        userId: userid,
+        patientName: patientname,
+        dateOfBirth: dateOfbirth,
+        gender,
+        bookedDate: date,
+        bookedTime: slot,
+        mobilenumber,
+        email,
+        testDetails: completeCartItems.testCart,
+        type: types,
+      });
+      await appointments.save();
+      await User.updateOne(
+        { _id: userid },
+        { $set: { "testCart.item": [], "testCart.totalPrice": "0" } }
+      );
+      return res
+        .status(200)
+        .json({ appointments, message: "Payment verified successfully" });
+    } else {
+      return res.status(400).json({ message: "Invalid signature sent!" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error!" });
+    console.log(error);
+  }
+};
+
+export const successDetails = async (req, res) => {
+  try {
+    const id = req.params.appointmentId;
+    const appointmentDetails = await appointmentModel.findById({ _id: id });
+    return res
+      .status(200)
+      .json({ appointmentDetails, message: "Data successfully fetched" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error!" });
+  }
+};
+
 export const logout = async (req, res) => {
-  // const token = req.headers.cookie;
-  // console.log("token",token)
-  // console.log("logout");
   res.clearCookie("Token");
   return res.status(200).json({ message: "Succefully Logged out" });
 };

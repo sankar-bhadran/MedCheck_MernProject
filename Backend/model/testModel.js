@@ -26,7 +26,7 @@ const testSchema = new mongoose.Schema({
   },
 
   price: {
-    type: String,
+    type: Number,
     required: true,
   },
 });

@@ -103,8 +103,8 @@ const LabFilter = () => {
           padding: "16px",
           borderRadius: "8px",
           boxShadow: "0 5px 5px rgba(0, 0, 0, 0.1)",
-          //   border: "1px solid #1778F2",
-          //   backgroundColor:'#F8F8F8',
+            // border: "1px solid #1778F2",
+            // backgroundColor:'#F8F8F8',
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>

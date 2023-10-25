@@ -1,7 +1,7 @@
 import React from "react";
 import { Container, Grid, Paper, Typography, Button } from "@mui/material";
 import { Link } from "react-router-dom";
-import { getContinue } from "../../../redux/features/CenterSlice";
+import { labGetContinue } from "../../../redux/features/labSlice";
 import { useDispatch } from "react-redux";
 
 const LabRegistrationComp = (props) => {
@@ -9,7 +9,7 @@ const LabRegistrationComp = (props) => {
   const { isReject, message, verified } = props.data;
 
   const handleClick = () => {
-    dispatch(getContinue());
+    dispatch(labGetContinue());
   };
   return (
     <Container sx={{ marginTop: "5%" }}>

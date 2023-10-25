@@ -26,14 +26,11 @@ import {
 import { useEffect, useState } from "react";
 
 export default function AddScan({ centerId }) {
-  console.log("centerId", centerId);
   const dispatch = useDispatch();
   const scanCategories = useSelector((state) => state.center.CommonData);
   const testAdded = useSelector((state) => state.center.AddedTest);
   const status = useSelector((state) => state.center.CenterStatus);
-  console.log("scanCategories", scanCategories);
-  console.log("testAdded", testAdded);
-  console.log("testAdded", status);
+ 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -47,6 +44,7 @@ export default function AddScan({ centerId }) {
   const [details, setDetails] = useState(null);
   const [price, setPrice] = useState(null);
 
+ 
   const handleMainCategorySelect = (event, selectedCategory) => {
     setSelectedValue(selectedCategory);
     const selectedSubcategories =
@@ -55,12 +53,6 @@ export default function AddScan({ centerId }) {
 
     setSubValue(selectedSubcategories);
   };
-
-  console.log("selectevalue", selectedValue);
-  console.log("subValue", subValue);
-  console.log("selectedsubcat", selectedSubCategories);
-  console.log("details", details);
-  console.log("price", price);
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
@@ -79,10 +71,6 @@ export default function AddScan({ centerId }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("selectedValue:", selectedValue);
-    console.log("selectedSubCategories:", selectedSubCategories);
-    console.log("details:", details);
-    console.log("price:", price);
     const formData = {
       mainCategory: selectedValue,
       subCategory: selectedSubCategories,
@@ -91,18 +79,16 @@ export default function AddScan({ centerId }) {
       centerID: centerId,
     };
     handleClose();
-    console.log("formdata", formData);
     dispatch(addScan(formData));
   };
 
   useEffect(() => {
     dispatch(getAddTest(centerId));
-    console.log("centerId", centerId);
   }, []);
 
-  useEffect(()=>{
-    dispatch(getAddTest(centerId))
-  },[status])
+  useEffect(() => {
+    dispatch(getAddTest(centerId));
+  }, [status]);
 
   return (
     <Paper

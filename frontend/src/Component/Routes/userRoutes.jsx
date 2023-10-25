@@ -3,7 +3,8 @@ import { Navigate, Outlet } from "react-router-dom";
 const UserRoutes = () => {
   const existingUserJSON = localStorage.getItem("existinguser");
   const existingUser = JSON.parse(existingUserJSON);
-  const userType = existingUser.userType;
+  const userType = existingUser?.userType;
+  console.log(existingUser?.userType);
   if (userType === "user") {
     return <Outlet />;
   } else {
