@@ -1,0 +1,33 @@
+{
+  "files": {
+    "main.css": "/static/css/main.f1859929.css",
+    "main.js": "/static/js/main.565fc377.js",
+    "static/js/787.cda612ba.chunk.js": "/static/js/787.cda612ba.chunk.js",
+    "static/media/blood-test.gif": "/static/media/blood-test.5e7cb9a5a7c319cadfa9.gif",
+    "static/media/Screenshot 2023-09-26 122057.png": "/static/media/Screenshot 2023-09-26 122057.c3f0ae1b4be564ea6eff.png",
+    "static/media/error404.png": "/static/media/error404.1714093088760c2727e4.png",
+    "static/media/Screenshot 2023-09-18 110353.png": "/static/media/Screenshot 2023-09-18 110353.5359ef9db0efe28966dd.png",
+    "static/media/disinfection.png": "/static/media/disinfection.54f17b40058fb35ce606.png",
+    "static/media/mri-scanner.png": "/static/media/mri-scanner.984d61109433d89181c9.png",
+    "static/media/lab.png": "/static/media/lab.6c71ad973cd9887456ab.png",
+    "static/media/thermometer.png": "/static/media/thermometer.ef091993395a9a6cda2c.png",
+    "static/media/correct.png": "/static/media/correct.993aaabc1366cfb5de7d.png",
+    "static/media/add-friend.png": "/static/media/add-friend.8a0965ff1c3efa53d036.png",
+    "static/media/letter-i (1).png": "/static/media/letter-i (1).16e4c6550e32ff6353af.png",
+    "static/media/Screenshot 2023-07-27 192734.png": "/static/media/Screenshot 2023-07-27 192734.21ca83ad6b5dd5d5255d.png",
+    "static/media/business-and-finance.png": "/static/media/business-and-finance.6f914015ee3e429c1791.png",
+    "static/media/revicons.eot": "/static/media/revicons.a77de540a38981833f9e.eot",
+    "static/media/revicons.ttf": "/static/media/revicons.57fd05d4ae650374c8de.ttf",
+    "static/media/down-arrow.png": "/static/media/down-arrow.a370f574b595965c31a9.png",
+    "static/media/sanitizer.png": "/static/media/sanitizer.335cdd5d9edfb9dd3afc.png",
+    "static/media/revicons.woff": "/static/media/revicons.e8746a624ed098489406.woff",
+    "index.html": "/index.html",
+    "main.f1859929.css.map": "/static/css/main.f1859929.css.map",
+    "main.565fc377.js.map": "/static/js/main.565fc377.js.map",
+    "787.cda612ba.chunk.js.map": "/static/js/787.cda612ba.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f1859929.css",
+    "static/js/main.565fc377.js"
+  ]
+}
