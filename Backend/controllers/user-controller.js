@@ -12,7 +12,6 @@ import nodemailer from "nodemailer";
 import Mailgen from "mailgen";
 import Razorpay from "razorpay";
 import crypto from "crypto";
-import { OAuth2Client } from "google-auth-library";
 import testModel from "../model/testModel.js";
 const accountSid = "AC6ffd98d07b09c3795988fca455810836";
 const authToken = "e667ea90d9fc4f925dfc0557ef214bd1";
@@ -70,62 +69,7 @@ export const signup = async (req, res, next) => {
   }
 };
 
-export const googleSignup = async (req, res) => {
-  const { credential, clientId, userType } = req.body;
-  console.log("credential", credential);
-  console.log("clientId", clientId);
-  console.log("userType", userType);
-  try {
-    const client = new OAuth2Client(clientId);
-    const ticket = await client.verifyIdToken({
-      idToken: credential,
-      audience: clientId,
-    });
-    const payload = ticket.getPayload();
-    const email = payload?.email;
-    const user = await User.findOne({ email: email });
-    if (!user) {
-      const user = new User({
-        username: payload?.name,
-        email: payload?.email,
-        userType,
-      });
-      await user.save();
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET_KEY, {
-        expiresIn: "1d",
-      });
 
-      const expirationTime = new Date(Date.now() + 1000 * 60 * 60);
-      res.cookie("Token", token, {
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        expires: expirationTime,
-      });
-      return res
-        .status(200)
-        .json({ message: "Successfully Logged In", token, user, userType });
-    } else {
-      const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET_KEY, {
-        expiresIn: "1d",
-      });
-
-      const expirationTime = new Date(Date.now() + 1000 * 60 * 60);
-      res.cookie("Token", token, {
-        path: "/",
-        httpOnly: true,
-        sameSite: "lax",
-        expires: expirationTime,
-      });
-      return res
-        .status(200)
-        .json({ message: "Successfully Logged In", token, user });
-    }
-  } catch (error) {
-    console.error("Error during signup", error);
-    res.status(500).json({ message: "Error during signup" });
-  }
-};
 
 export const verifyotp = async (req, res, next) => {
   const { otp, phonenumber } = req.body;

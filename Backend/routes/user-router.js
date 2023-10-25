@@ -10,7 +10,6 @@ import {
   updateProfile,
   address,
   deleteAddress,
-  googleSignup,
   addToCart,
   removeFromCart,
   scanCenterDetails,
@@ -30,7 +29,6 @@ const userRouter = express.Router();
 userRouter.post("/sentotp", sendotp);
 userRouter.post("/signup", verifyotp, signup);
 userRouter.post("/login", login);
-userRouter.post("/googleSignup", googleSignup);
 userRouter.post("/forgotpassword", forgotpassword);
 userRouter.post("/resetpassword", resetpassword);
 userRouter.get("/userprofile", verifyToken, getuser);
