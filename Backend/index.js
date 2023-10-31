@@ -14,6 +14,9 @@ const app = express();
 app.use(express.static('public'))
 app.use(express.json());
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use("/", (req,res) => {
+  res.send("server is running")
+});
 app.use("/api", userRouter);
 app.use('/admin',adminRouter)
 app.use('/center',centerRouter)
@@ -23,5 +26,5 @@ app.use(errorHandling);
 app.listen(5000, () => {
   connect();
   console.log("Connected to Port 5000");
-  res.send("server is running")
+  res.write("server is running")
 });
