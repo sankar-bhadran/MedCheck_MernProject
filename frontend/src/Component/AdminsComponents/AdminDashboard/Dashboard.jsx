@@ -101,7 +101,10 @@ const Dashboard = () => {
                       <div className="paddingall">
                         <span className="pricetitle">₹ {data?.labSum}</span>
                         <br />
-                        <span className="pricesubtitle"> LabCentre Total Income</span>
+                        <span className="pricesubtitle">
+                          {" "}
+                          LabCentre Total Income
+                        </span>
                       </div>
                     </Stack>
                   </Card>
@@ -119,6 +122,7 @@ const Dashboard = () => {
               </Grid>
               <Grid item xs={4}>
                 <Card sx={{ height: 60 + "vh", width: 49 + "vh" }}>
+                  
                   <CardContent>
                     <PieChart />
                   </CardContent>

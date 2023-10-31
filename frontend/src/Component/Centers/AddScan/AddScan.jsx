@@ -30,7 +30,7 @@ export default function AddScan({ centerId }) {
   const scanCategories = useSelector((state) => state.center.CommonData);
   const testAdded = useSelector((state) => state.center.AddedTest);
   const status = useSelector((state) => state.center.CenterStatus);
- 
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -44,7 +44,6 @@ export default function AddScan({ centerId }) {
   const [details, setDetails] = useState(null);
   const [price, setPrice] = useState(null);
 
- 
   const handleMainCategorySelect = (event, selectedCategory) => {
     setSelectedValue(selectedCategory);
     const selectedSubcategories =

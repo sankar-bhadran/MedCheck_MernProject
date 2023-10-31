@@ -14,6 +14,8 @@ import {
   registerScan,
   scanDetails,
   searchDetails,
+  statusChange,
+  uploadReport,
 } from "../controllers/center-controller.js";
 import { upload } from "../middleware/multer.js";
 const centerRouter = express.Router();
@@ -51,8 +53,15 @@ centerRouter.patch(
 );
 centerRouter.get("/listingdetails", verifyToken, listingDetails);
 centerRouter.get("/search", verifyToken, searchDetails);
-centerRouter.get('/fetchtestdetails/:id',verifyToken,categoryDetails)
-centerRouter.get('/fetchaddtest/:centerid',verifyToken,getAddTestDetails)
-centerRouter.post('/getTestDetails',verifyToken,scanDetails)
-centerRouter.get('/fetchbookings/:centerid',verifyToken,fetchBookingDetails)
+centerRouter.get("/fetchtestdetails/:id", verifyToken, categoryDetails);
+centerRouter.get("/fetchaddtest/:centerid", verifyToken, getAddTestDetails);
+centerRouter.post("/getTestDetails", verifyToken, scanDetails);
+centerRouter.post("/teststatus", verifyToken, statusChange);
+centerRouter.get("/fetchbookings/:centerid", verifyToken, fetchBookingDetails);
+centerRouter.post(
+  "/uploadreport",
+  verifyToken,
+  upload.single("image"),
+  uploadReport
+);
 export default centerRouter;

@@ -37,10 +37,7 @@ export const sendotp = async (req, res) => {
     } else {
       console.log("else case");
       const otpResponse = "1234";
-      // const otpResponse = await client.verify.v2
-      //   .services(servicessid)
-      //   .verifications.create({ to: `+91${phonenumber}`, channel: "sms" });
-      // console.log(otpResponse);
+
       res.status(200).send(`OTP successful: ${JSON.stringify(otpResponse)}`);
     }
   } catch (error) {
@@ -68,8 +65,6 @@ export const signup = async (req, res, next) => {
     next(error);
   }
 };
-
-
 
 export const verifyotp = async (req, res, next) => {
   const { otp, phonenumber } = req.body;
@@ -507,9 +502,44 @@ export const successDetails = async (req, res) => {
   try {
     const id = req.params.appointmentId;
     const appointmentDetails = await appointmentModel.findById({ _id: id });
+
     return res
       .status(200)
       .json({ appointmentDetails, message: "Data successfully fetched" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error!" });
+  }
+};
+
+export const myOrders = async (req, res) => {
+  try {
+    const id = req.user;
+    console.log(id);
+    const fetchedorders = await appointmentModel
+      .find({ userId: id })
+      .populate("labId");
+    return res
+      .status(200)
+      .json({ fetchedorders, message: "Data successfully fetched" });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error!" });
+  }
+};
+
+export const downloadreport = async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log(req.params.id);
+    const data = await appointmentModel.findById({ _id: id }).select("report");
+    const reportData = data.report;
+    if (!reportData) {
+      return res.status(404).json({ message: "Report data not found" });
+    }
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="report.pdf"`);
+
+    res.send(reportData);
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error!" });
   }

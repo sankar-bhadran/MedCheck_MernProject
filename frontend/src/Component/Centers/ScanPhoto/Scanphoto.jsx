@@ -215,7 +215,6 @@ const Scanphoto = ({ state, setState }) => {
                       >
                         {state?.image3 ||
                         (state.CenterImages && state.CenterImages[2]) ? (
-                          // Check if state.image3 is an object (a File object) and if its type starts with 'image/'
                           typeof state.image3 === "object" &&
                           state.image3.type.startsWith("image/") ? (
                             <img

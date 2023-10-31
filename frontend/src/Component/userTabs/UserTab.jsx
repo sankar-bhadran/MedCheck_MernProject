@@ -8,6 +8,7 @@ import Box from "@mui/material/Box";
 // import ScanBookings from "../ScanBookings/Bookings";
 // import AddSlot from "../AddSlot/AddSlot";
 import UserProfile from "../UserProfile/userProfile";
+import MyOrders from "../MyOrders/MyOrders";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -58,15 +59,15 @@ const UserTab = () => {
           aria-label="basic tabs example"
         >
           <Tab label="USER PROFILE" {...a11yProps(0)} />
-          <Tab label="Bookings   " {...a11yProps(1)} />
-          <Tab label="Add Slot" {...a11yProps(2)} />
+          <Tab label="My Orders  " {...a11yProps(1)} />
+          {/* <Tab label="Add Slot" {...a11yProps(2)} /> */}
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
         <UserProfile />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        {/* <ScanBookings /> */}
+        <MyOrders />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         {/* <AddSlot /> */}

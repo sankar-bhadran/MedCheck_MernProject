@@ -19,21 +19,29 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { fetchBookingDetails } from "../../../redux/features/CenterSlice";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import {
+  fetchBookingDetails,
+  testStatus,
+} from "../../../redux/features/CenterSlice";
+import download from "../../../Assets/upload.png";
+import UploadReport from "../UploadReport/UploadReport";
+
 const Bookings = ({ centerId }) => {
+  const [statuses, setStatus] = useState();
   const dispatch = useDispatch();
-  const fetchedDetails = useSelector((state) => state.center.CommonData);
-  //   console.log(
-  //     "fetchedDetails",
-  //     fetchedDetails[0]?.testDetails.item[0]?.description
-  //   );
+  const fetchedDetails = useSelector((state) => state.center.Data);
+  console.log("fetchedDetails", fetchedDetails);
+
 
   if (fetchedDetails && fetchedDetails.length > 0) {
     const descriptions = fetchedDetails[0]?.testDetails?.item.map(
       (item) => item.description
     );
 
-    // 'descriptions' now contains an array of 'description' properties from 'testDetails' items
     console.log(descriptions);
   }
 
@@ -61,6 +69,18 @@ const Bookings = ({ centerId }) => {
   useEffect(() => {
     dispatch(fetchBookingDetails(centerId));
   }, []);
+
+  const [age, setAge] = React.useState();
+  console.log("age", age);
+  const handleChange = (id, event) => {
+    setAge(event.target.value);
+    dispatch(
+      testStatus({
+        centerId: id,
+        age: event.target.value,
+      })
+    );
+  };
 
   return (
     <Paper
@@ -105,11 +125,20 @@ const Bookings = ({ centerId }) => {
               <TableCell align="left" style={{ minWidth: "100px" }}>
                 Booked Scan
               </TableCell>
+              {age === "Completed" ? (
+                <TableCell align="left" style={{ minWidth: "100px" }}>
+                  GenerateReport
+                </TableCell>
+              ) : (
+                <TableCell align="left" style={{ minWidth: "100px" }}>
+                  Status
+                </TableCell>
+              )}
             </TableRow>
           </TableHead>
           <TableBody>
-            {fetchedDetails ? (
-              fetchedDetails.map((data, index) => (
+            {Array.isArray(fetchedDetails) ? (
+              fetchedDetails?.map((data, index) => (
                 <TableRow hover role="checkbox" tabIndex={-1}>
                   <TableCell align="left">{data.patientName}</TableCell>
                   <TableCell align="left">{data.mobilenumber}</TableCell>
@@ -122,6 +151,35 @@ const Bookings = ({ centerId }) => {
                       Bookedtests
                     </Button>
                   </TableCell>
+                  {data.status === "Completed" && !fetchedDetails?.report ? (
+                    <TableCell>
+                      <UploadReport id={data._id} />
+                    </TableCell>
+                  ) : data.status === "Completed" && fetchedDetails?.report ? (
+                    <TableCell>
+                      <Typography>UPLOADED</Typography>
+                    </TableCell>
+                  ) : (
+                    <TableCell align="left">
+                      <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                        <InputLabel id="demo-simple-select-label">
+                          {data.status}
+                        </InputLabel>
+
+                        <Select
+                          labelId="demo-select-small-label"
+                          id="demo-select-small"
+                          value={data.status}
+                          label="ag egeg"
+                          onChange={(event) => handleChange(data._id, event)}
+                        >
+                          <MenuItem value="In Process">In Process</MenuItem>
+                          <MenuItem value="Tested">Tested</MenuItem>
+                          <MenuItem value="Completed">Completed</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))
             ) : (

@@ -53,7 +53,7 @@ function App() {
         <Route path="/" element={<Userhome />} />
 
         <Route element={<UserRoutes />}>
-          <Route path="/userprofile" element={< UserprofilePage  />} />
+          <Route path="/userprofile" element={<   UserTabs  />} />
           <Route path="/customer" element={<ListingPage />} />
           <Route path="/labcustomer" element={<LabListingPage />} />
           <Route path="/detailpage/:id" element={<ScanDetailPage />} />

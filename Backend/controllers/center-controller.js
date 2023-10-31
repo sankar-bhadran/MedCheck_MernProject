@@ -170,7 +170,7 @@ export const listingDetails = async (req, res) => {
 
 export const searchDetails = async (req, res) => {
   try {
-    console.log(req.query)
+    console.log(req.query);
     const search = req.query.searchdata;
     const page = req.query.page;
     const location = req.query.location;
@@ -255,5 +255,53 @@ export const fetchBookingDetails = async (req, res) => {
       .json({ appointments, message: "data fetched successfully" });
   } catch (error) {
     return res.status(400).json({ message: "somthing went wrong" });
+  }
+};
+
+export const statusChange = async (req, res) => {
+  const id = req.body.centerId;
+  const status = req.body.age;
+  console.log(status);
+  console.log(id);
+  console.log(req.body);
+
+  try {
+    const updatedAppointment = await Appointments.findByIdAndUpdate(
+      id,
+      { $set: { status: status } },
+      { new: true }
+    );
+    console.log("sdasda", updatedAppointment);
+    if (!updatedAppointment) {
+      return res.status(404).json({ message: "Appointment not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ updatedAppointment, message: "Status Changed Successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const uploadReport = async (req, res) => {
+  try {
+    const id = req.body.id;
+    console.log("file", req.file);
+    console.log(req.body.id);
+    const reportUploaded = await Appointments.findByIdAndUpdate(
+      id,
+      { $set: { report: req.file.filename } },
+      { new: true }
+    );
+   
+    if (!reportUploaded) {
+      return res.status(404).json({ message: "ReportUploaded not found" });
+    }
+    return res
+      .status(200)
+      .json({ reportUploaded, message: "ReportUploaded Successfully" });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

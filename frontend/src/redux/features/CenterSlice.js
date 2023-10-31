@@ -8,6 +8,7 @@ const initialState = {
   CommonData: null,
   TestDetails: [],
   AddedTest: null,
+  Data: null,
   error: "",
   Messages: " ",
 };
@@ -81,7 +82,10 @@ export const getListingDetails = createAsyncThunk(
 
 export const searchDetails = createAsyncThunk(
   "center/searchdetails",
-  async ({ search = "", page = 1 ,selectedLocations=""}, { rejectWithValue }) => {
+  async (
+    { search = "", page = 1, selectedLocations = "" },
+    { rejectWithValue }
+  ) => {
     console.log("searchsadad ", selectedLocations);
     try {
       const response = await axios.get(
@@ -147,28 +151,58 @@ export const getPaginationData = createAsyncThunk(
   }
 );
 
-export const getTestDetails=createAsyncThunk('center/getTestDetails',async(formData,{rejectWithValue})=>{
-  console.log("formdata",formData)
-  try {
-    const response=await axios.post('center/getTestDetails',formData)
-    return response.data
-  } catch (error) {
-    return rejectWithValue(error.response.data);
-
+export const getTestDetails = createAsyncThunk(
+  "center/getTestDetails",
+  async (formData, { rejectWithValue }) => {
+    console.log("formdata", formData);
+    try {
+      const response = await axios.post("center/getTestDetails", formData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
-})
+);
 
-export const fetchBookingDetails=createAsyncThunk('center/fetchbookings',async(centerid,{rejectWithValue})=>{
-  try {
-    const response=await axios.get(`center/fetchbookings/${centerid}`)
-    console.log("response",response.data)
-    return response.data
-  } catch (error) {
-    return rejectWithValue(error.response.data)
+export const testStatus = createAsyncThunk(
+  "center/teststatus",
+  async (data, { rejectWithValue }) => {
+    console.log("teststatus", data);
+    try {
+      const response = await axios.post("center/teststatus", data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
-})
+);
 
+export const fetchBookingDetails = createAsyncThunk(
+  "center/fetchbookings",
+  async (centerid, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`center/fetchbookings/${centerid}`);
+      console.log("response", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
+export const uploadReport = createAsyncThunk(
+  "center/uploadreport",
+  async (data, { rejectWithValue }) => {
+    console.log("uploadReport", data);
+    try {
+      const response = await axios.post("center/uploadreport", data);
+      console.log("response", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 const centerSlice = createSlice({
   initialState,
@@ -295,38 +329,58 @@ const centerSlice = createSlice({
         state.error = action.error.message || " ";
       })
 
-      .addCase(getTestDetails.pending,(state,action)=>{
-        state.loading=true
+      .addCase(getTestDetails.pending, (state, action) => {
+        state.loading = true;
       })
 
-      .addCase(getTestDetails.fulfilled,(state,action)=>{
-        state.CenterStatus=true
-        state.CommonData=action.payload.details
-        console.log("commonData",action.payload.details)
-
+      .addCase(getTestDetails.fulfilled, (state, action) => {
+        state.CenterStatus = true;
+        state.CommonData = action.payload.details;
+        console.log("commonData", action.payload.details);
       })
 
-      .addCase(getTestDetails.rejected,(state,action)=>{
-        state.error=action.error.message || " "
+      .addCase(getTestDetails.rejected, (state, action) => {
+        state.error = action.error.message || " ";
       })
 
-      .addCase(fetchBookingDetails.pending,(state,action)=>{
-        state.loading=true
+      .addCase(fetchBookingDetails.pending, (state, action) => {
+        state.loading = true;
       })
 
-      .addCase(fetchBookingDetails.fulfilled,(state,action)=>{
-        state.CommonData=action.payload.appointments
+      .addCase(fetchBookingDetails.fulfilled, (state, action) => {
+        state.Data = action.payload.appointments;
       })
 
-      .addCase(fetchBookingDetails.rejected,(state,action)=>{
-        state.error=action.error.message || ""
+      .addCase(fetchBookingDetails.rejected, (state, action) => {
+        state.error = action.error.message || "";
       })
 
-      
+      .addCase(testStatus.pending, (state, action) => {
+        state.loading = true;
+      })
 
+      .addCase(testStatus.fulfilled, (state, action) => {
+        state.CenterStatus = true;
+        state.Data = action.payload.updatedAppointment;
+      })
 
-      
+      .addCase(testStatus.rejected, (state, action) => {
+        state.error = action.error.message || "";
+      })
 
+      .addCase(uploadReport.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(uploadReport.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Data = action.payload.reportUploaded;
+      })
+
+      .addCase(uploadReport.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "";
+      });
   },
 });
 

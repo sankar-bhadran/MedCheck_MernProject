@@ -72,6 +72,14 @@ const appointmentSchema = new mongoose.Schema({
   type: {
     type: String,
   },
+
+
+  report:{
+    type:String
+  }
+
+
+
 });
 
 export default mongoose.model("appointment", appointmentSchema);

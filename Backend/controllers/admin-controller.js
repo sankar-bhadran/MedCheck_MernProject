@@ -9,6 +9,7 @@ import Appointments from "../model/appointmentModel.js";
 import labDetails from "../model/labdetails.js";
 import nodemailer from "nodemailer";
 import Mailgen from "mailgen";
+import appointmentModel from "../model/appointmentModel.js";
 export const adminlogin = async (req, res) => {
   const { email, password } = req.body;
   let admin;
@@ -430,17 +431,19 @@ export const adminDashboard = async (req, res) => {
       type: "ScanCentre",
       bookedDate: formattedDate,
     });
-    console.log("ScanType",Scantype)
+    console.log("ScanType", Scantype);
     const Scanprices = Scantype.map(
       (appointment) => appointment.testDetails.totalPrice
     );
     todayScanSum = Scanprices.reduce((acc, price) => acc + price, 0);
+    const scanBooking = await appointmentModel.countDocuments({ type: "ScanCentre" });
+    console.log("Scan",scanBooking)
 
     const dashboarddata = {
       scanCenterCount: scanCenterCount,
       labCenterCount: labCenterCount,
       labSum: todayLabsum,
-      scanSum:todayScanSum 
+      scanSum: todayScanSum,
     };
     return res
       .status(200)

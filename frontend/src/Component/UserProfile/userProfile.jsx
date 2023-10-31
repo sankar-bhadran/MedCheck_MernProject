@@ -83,7 +83,7 @@ const UserProfile = () => {
     <>
       <Grid container>
         <Container sx={{ minHeight: "100vh" }}>
-          <Box sx={{ width: "100%", marginTop: "20px" }}>
+          {/* <Box sx={{ width: "100%", marginTop: "20px" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
                 value={value}
@@ -95,7 +95,7 @@ const UserProfile = () => {
                 <Tab label="My Orders" />
               </Tabs>
             </Box>
-          </Box>
+          </Box> */}
           <Paper
             sx={{
               maxWidth: "1100px",

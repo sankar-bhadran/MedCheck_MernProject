@@ -1,27 +1,56 @@
-import React from 'react'
-import  { useEffect, useState } from "react";
-import { Box, Paper, Typography } from "@mui/material";
+import React from "react";
+import { useEffect, useState } from "react";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import {
-  searchDetails,
-  getListingDetails,
-} from "../../../redux/features/CenterSlice";
-import { useDispatch } from "react-redux";
+import { getListingDetails } from "../../../redux/features/CenterSlice";
 import debounce from "lodash.debounce";
+import { searchDetails } from "../../../redux/features/labSlice";
+import { getAllLocations } from "../../../redux/features/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const LabFilter = () => {
-    const [search, setSearch] = useState("");
+  const locations = useSelector((state) => state.user.locationData);
+
+  const [search, setSearch] = useState("");
   const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setSearch(e.target.value);
   };
 
+  const [selectedLocations, setSelectedLocations] = useState("");
+  console.log(" selectedLocations", selectedLocations);
+  const handleCheckboxClick = (place) => {
+    setSelectedLocations(place);
+  };
+
   useEffect(() => {
-    dispatch(searchDetails(search));
-  }, [search]);
+    dispatch(searchDetails({ search, selectedLocations }));
+  }, [search, selectedLocations]);
+
+  useEffect(() => {
+    dispatch(getAllLocations());
+  }, []);
+
+  const handleCheckboxChange = (location) => {
+    // if (selectedLocations?.includes(place)) {
+    //   setSelectedLocations(selectedLocations.filter((item) => item !== place));
+    // } else {
+    //   setSelectedLocations([...selectedLocations, place]);
+    // }
+    location = selectedLocations === location ? "" : location;
+    setSelectedLocations(location);
+  };
 
   console.log("search", search);
   const Search = styled("div")(({ theme }) => ({
@@ -96,15 +125,15 @@ const LabFilter = () => {
           },
           height: {
             md: "200px",
-            lg: "300px",
+            lg: "100%",
             sm: "300px",
             xs: "400px",
           },
           padding: "16px",
           borderRadius: "8px",
           boxShadow: "0 5px 5px rgba(0, 0, 0, 0.1)",
-            // border: "1px solid #1778F2",
-            // backgroundColor:'#F8F8F8',
+          // border: "1px solid #1778F2",
+          // backgroundColor:'#F8F8F8',
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -131,9 +160,41 @@ const LabFilter = () => {
             onChange={handleChange}
           />
         </Search>
+        <div
+          style={{
+            width: "100%",
+            height: "2px",
+            backgroundColor: "#c0c0c0",
+            margin: "10px auto",
+          }}
+        ></div>
+        <Typography sx={{ color: "#828282" }}>Locations</Typography>
+        <Grid container>
+          {locations?.[0].location?.map((data, index) => (
+            <Grid item mb={-1} key={data._id} lg={12}>
+              {/* {data.location.map((place, placeIndex) => ( */}
+              <Stack>
+                <FormControlLabel
+                  key={data}
+                  control={
+                    <Checkbox
+                      inputProps={{ "aria-label": "controlled" }}
+                      size="small"
+                      // onClick={() => handleCheckboxClick(place)}
+                      onChange={() => handleCheckboxChange(data)}
+                      checked={data === selectedLocations}
+                    />
+                  }
+                  label={data}
+                />
+              </Stack>
+              {/* ))} */}
+            </Grid>
+          ))}
+        </Grid>
       </Paper>
     </Box>
-  )
-}
+  );
+};
 
-export default LabFilter
+export default LabFilter;

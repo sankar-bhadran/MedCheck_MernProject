@@ -312,6 +312,39 @@ export const getLabTest = async (req, res) => {
   }
 };
 
+export const searchDetails = async (req, res) => {
+  try {
+    console.log(req.query);
+    const search = req.query.searchdata;
+    const page = req.query.page;
+    const location = req.query.location;
+    const ITEM_PER_PAGE = 6;
+    const query = {
+      $or: [
+        { CenterName: { $regex: search, $options: "i" } },
+        { City: { $regex: search, $options: "i" } },
+      ],
+    };
+    if (location) {
+      query.City = location;
+    }
+    const count = await labdetails.countDocuments({ isVerified: true });
+    console.log("count", count);
+    const skip = (page - 1) * ITEM_PER_PAGE;
+    const labSearch = await labdetails
+      .find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(ITEM_PER_PAGE);
+
+    const pageCount = Math.ceil(count / ITEM_PER_PAGE);
+    console.log("pageCount", pageCount);
+    return res.status(200).json({ labSearch, pageCount });
+  } catch (error) {
+    return res.status(400).json({ message: "somthing went wrong" });
+  }
+};
+
 
 
 

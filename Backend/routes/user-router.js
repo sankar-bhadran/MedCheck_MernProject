@@ -19,6 +19,8 @@ import {
   labAddToCart,
   labRemoveFromCart,
   labCenterDetails,
+  myOrders,
+  downloadreport,
 } from "../controllers/user-controller.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
 import { blockUser } from "../middleware/blockUserMiddleware.js";
@@ -45,5 +47,7 @@ userRouter.get('/labdetails/:id',verifyToken,labCenterDetails)
 userRouter.get("/fetchlocations", verifyToken, fetchLocations);
 userRouter.get("/paymentorders", verifyToken, orders);
 userRouter.post("/paymentverify", verifyToken, verifypayment);
+userRouter.get('/getmyorders',verifyToken,myOrders)
+userRouter.get('/downloadreport/:id',verifyToken,downloadreport)
 userRouter.get("/logout", verifyToken, logout);
 export default userRouter;

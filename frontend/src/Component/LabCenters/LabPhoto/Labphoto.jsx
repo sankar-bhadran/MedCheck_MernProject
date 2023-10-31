@@ -88,11 +88,16 @@ const Labphoto = ({ state, setState }) => {
                           padding: "16px",
                         }}
                       >
-                        {state.image1 ? (
-                          <img
-                            style={{ width: 240, height: 240, padding: 22 }}
-                            src={URL.createObjectURL(state.image1)}
-                          />
+                        {state?.image1 ? (
+                          typeof state.image1 === "object" &&
+                          state.image1.type.startsWith("image/") ? (
+                            <img
+                              style={{ width: 240, height: 240, padding: 22 }}
+                              src={URL.createObjectURL(state.image1)}
+                            />
+                          ) : (
+                            <p>Image is not valid or not found</p>
+                          )
                         ) : (
                           <Typography
                             sx={{
@@ -145,11 +150,16 @@ const Labphoto = ({ state, setState }) => {
                           padding: "16px",
                         }}
                       >
-                        {state.image2 ? (
-                          <img
-                            style={{ width: 240, height: 240, padding: 22 }}
-                            src={URL.createObjectURL(state.image2)}
-                          />
+                        {state?.image2 ? (
+                          typeof state.image2 === "object" &&
+                          state.image2.type.startsWith("image/") ? (
+                            <img
+                              style={{ width: 240, height: 240, padding: 22 }}
+                              src={URL.createObjectURL(state.image2)}
+                            />
+                          ) : (
+                            <p>Image is not valid or not found</p>
+                          )
                         ) : (
                           <Typography
                             sx={{
@@ -202,11 +212,16 @@ const Labphoto = ({ state, setState }) => {
                           padding: "16px",
                         }}
                       >
-                        {state.image3 ? (
-                          <img
-                            style={{ width: 240, height: 240, padding: 22 }}
-                            src={URL.createObjectURL(state.image3)}
-                          />
+                          {state?.image3 ? (
+                          typeof state.image3 === "object" &&
+                          state.image3.type.startsWith("image/") ? (
+                            <img
+                              style={{ width: 240, height: 240, padding: 22 }}
+                              src={URL.createObjectURL(state.image3)}
+                            />
+                          ) : (
+                            <p>Image is not valid or not found</p>
+                          )
                         ) : (
                           <Typography
                             sx={{

@@ -287,7 +287,7 @@ const Usersignup = () => {
             >
               Sign Up
             </Button>
-            <GoogleLogin
+            {/* <GoogleLogin
               onSuccess={(credentialResponse) => {
                 console.log(credentialResponse);
                 dispatch(
@@ -299,7 +299,7 @@ const Usersignup = () => {
               onError={() => {
                 console.log("Login Failed");
               }}
-            />
+            /> */}
             <Typography
               sx={{
                 display: "flex",

@@ -1,6 +1,6 @@
 import express from "express";
 import { verifyToken } from "../middleware/authMiddleware.js";
-import { LabReject, addlabtest, fetchLabDetails, getAddedTest, getLabCategories, getLabTest, getLabsDetails, getOneLabDetail, labApproval, labContinueTrue, lablistingdetails, registerLab } from "../controllers/lab-controller.js";
+import { LabReject, addlabtest, fetchLabDetails, getAddedTest, getLabCategories, getLabTest, getLabsDetails, getOneLabDetail, labApproval, labContinueTrue, lablistingdetails, registerLab, searchDetails } from "../controllers/lab-controller.js";
 import { upload } from "../middleware/multer.js";
 
 const labRouter = express.Router();
@@ -22,6 +22,7 @@ labRouter.post('/registerlab',verifyToken, upload.fields([
   labRouter.patch('/labonetimeapprovel',verifyToken,labContinueTrue)
   labRouter.get('/labcategorires',verifyToken,getLabCategories)
   labRouter.post('/addlabtests',verifyToken,addlabtest)
+  labRouter.get('/searchdetails',verifyToken,searchDetails)
   labRouter.get('/fetchalladdedtest/:centerid',verifyToken,getAddedTest)
   labRouter.get('/getlabtest',verifyToken,getLabTest)
 

@@ -20,6 +20,7 @@ const initialState = {
   labData: null,
   userdata: {},
   userType: {},
+  reportData: null,
 };
 
 export const sentotp = createAsyncThunk(
@@ -259,6 +260,32 @@ export const successPageDetails = createAsyncThunk(
   async (appointmentId, { rejectWithValue }) => {
     try {
       const response = await axios.get(`api/successpagedetail${appointmentId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const myOrders = createAsyncThunk(
+  "user/getmyorders",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("api/getmyorders");
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const resultreport = createAsyncThunk(
+  "user/downloadreport",
+  async (downloadid, { rejectWithValue }) => {
+    console.log("iddd", downloadid);
+    try {
+      const response = await axios.get(`api/downloadreport/${downloadid}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -579,6 +606,35 @@ const userSlice = createSlice({
       })
 
       .addCase(successPageDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || " ";
+      })
+
+      .addCase(myOrders.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(myOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Data = action.payload.fetchedorders;
+      })
+
+      .addCase(myOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || " ";
+      })
+
+      .addCase(resultreport.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(resultreport.fulfilled, (state, action) => {
+        state.loading = false;
+        state.actionStatus = true;
+        state.reportData = action.payload;
+      })
+
+      .addCase(resultreport.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || " ";
       });

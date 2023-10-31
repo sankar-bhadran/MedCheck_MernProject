@@ -20,7 +20,7 @@ const Scancertificate = ({ state, setState }) => {
     const file = event.target.files[0];
     console.log(file);
     setState((prev) => ({ ...prev, [event.target.name]: file }));
-    console.log(state)
+    console.log(state);
   };
 
   return (
@@ -102,14 +102,20 @@ const Scancertificate = ({ state, setState }) => {
                         }}
                       >
                         {state?.NABH || state.CertificateImages ? (
-                          <img
-                            style={{ width: 240, height: 240, padding: 22 }}
-                            src={
-                              typeof state.NABH == "object"
-                                ? URL.createObjectURL(state.NABH)
-                                : `http://localhost:5000/images/${state?.CertificateImages?.[0]?.NABH}`
-                            }
-                          />
+                          <>
+                            {typeof state.NABH === "object" &&
+                            state.NABH.type.startsWith("image/") ? (
+                              <img
+                                style={{ width: 240, height: 240, padding: 22 }}
+                                src={URL.createObjectURL(state.NABH)}
+                                alt="NABH Image"
+                              />
+                            ) : (
+                              <p>
+                                Invalid or unsupported image format for NABH
+                              </p>
+                            )}
+                          </>
                         ) : (
                           <Typography
                             sx={{
@@ -165,13 +171,20 @@ const Scancertificate = ({ state, setState }) => {
                         }}
                       >
                         {state?.ISO || state.CertificateImages ? (
-                          <img
-                            onClick={() => fileInputRef5.current.click()}
-                            style={{ width: 240, height: 240, padding: 22 }}
-                            src={ typeof state.ISO == "object"
-                            ? URL.createObjectURL(state.ISO)
-                            : `http://localhost:5000/images/${state?.CertificateImages?.[2]?.ISO}`}
-                          />
+                          <>
+                            {typeof state.ISO === "object" &&
+                            state.ISO.type.startsWith("image/") ? (
+                              <img
+                                style={{ width: 240, height: 240, padding: 22 }}
+                                src={URL.createObjectURL(state.ISO)}
+                                alt="NABH Image"
+                              />
+                            ) : (
+                              <p>
+                                Invalid or unsupported image format for NABH
+                              </p>
+                            )}
+                          </>
                         ) : (
                           <Typography
                             sx={{
@@ -227,12 +240,20 @@ const Scancertificate = ({ state, setState }) => {
                         }}
                       >
                         {state?.NABL || state.CertificateImages ? (
-                          <img
-                            style={{ width: 240, height: 240, padding: 22 }}
-                            src={ typeof state.NABL == "object"
-                            ? URL.createObjectURL(state.NABL)
-                            : `http://localhost:5000/images/${state?.CertificateImages?.[1]?.NABL}`}
-                          />
+                          <>
+                            {typeof state.NABL === "object" &&
+                            state.NABL.type.startsWith("image/") ? (
+                              <img
+                                style={{ width: 240, height: 240, padding: 22 }}
+                                src={URL.createObjectURL(state.NABL)}
+                                alt="NABH Image"
+                              />
+                            ) : (
+                              <p>
+                                Invalid or unsupported image format for NABH
+                              </p>
+                            )}
+                          </>
                         ) : (
                           <Typography
                             sx={{

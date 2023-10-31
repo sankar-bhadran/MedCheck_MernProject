@@ -7,7 +7,7 @@ const initialState = {
   labData: null,
   commonData: null,
   Data: null,
-  intialData:null,
+  intialData: null,
   error: " ",
 };
 
@@ -151,16 +151,39 @@ export const getAllAddedTest = createAsyncThunk(
   }
 );
 
-export const getLabTest=createAsyncThunk('labcenter/getlabtest',async(formdata,{rejectWithValue})=>{
-  console.log("formdata",formdata)
-  try {
-    const response=await axios.get(`labcenter/getlabtest?category=${formdata.mainCategory}&labid=${formdata.labId}`)
-    console.log("response",response.data)
-    return response.data
-  } catch (error) {
-    return rejectWithValue(error.response.data)
+export const searchDetails = createAsyncThunk(
+  "lab/searchdetails",
+  async (
+    { search = "", page = "1", selectedLocations = "" },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.get(
+        `lab/searchdetails?searchdata=${search}&page=${page}&location=${selectedLocations}`
+      );
+      console.log("response", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
-})
+);
+
+export const getLabTest = createAsyncThunk(
+  "labcenter/getlabtest",
+  async (formdata, { rejectWithValue }) => {
+    console.log("formdata", formdata);
+    try {
+      const response = await axios.get(
+        `labcenter/getlabtest?category=${formdata.mainCategory}&labid=${formdata.labId}`
+      );
+      console.log("response", response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 const labSlice = createSlice({
   initialState,
@@ -311,18 +334,32 @@ const labSlice = createSlice({
         state.error = action.error.message || " ";
       })
 
-      .addCase(getLabTest.pending,(state,action)=>{
-        state.loading=true
+      .addCase(getLabTest.pending, (state, action) => {
+        state.loading = true;
       })
 
-      .addCase(getLabTest.fulfilled,(state,action)=>{
-        state.loading=false
-        state.commonData=action.payload.fetcheddata
+      .addCase(getLabTest.fulfilled, (state, action) => {
+        state.loading = false;
+        state.commonData = action.payload.fetcheddata;
       })
 
-      .addCase(getLabTest.rejected,(state,action)=>{
-        state.error=action.error.message || " "
+      .addCase(getLabTest.rejected, (state, action) => {
+        state.error = action.error.message || " ";
       })
+
+      .addCase(searchDetails.pending, (state, action) => {
+        state.loading = true;
+      })
+
+      .addCase(searchDetails.fulfilled, (state, action) => {
+        state.labStatus = true;
+        state.labData = action.payload.labSearch;
+        console.log("pageCount", action.payload);
+      })
+
+      .addCase(searchDetails.rejected, (state, action) => {
+        state.error = action.error.message || " ";
+      });
   },
 });
 
