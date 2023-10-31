@@ -19,6 +19,7 @@ app.use('/admin',adminRouter)
 app.use('/center',centerRouter)
 app.use('/labcenter',labRouter)
 app.use(errorHandling);
+
 app.get("/", (req, res) => {
   res.json("server started");
 });
@@ -26,5 +27,4 @@ app.get("/", (req, res) => {
 app.listen(5000, () => {
   connect();
   console.log("Connected to Port 5000");
-  res.write("server is running")
 });
