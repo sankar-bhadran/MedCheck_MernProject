@@ -55,6 +55,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (credential) => {
     try {
+      console.log("axios",axios)
       const response = await axios.post("api/login", credential);
       console.log("response", response.data);
       return response.data;
