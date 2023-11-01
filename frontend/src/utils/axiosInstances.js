@@ -2,7 +2,7 @@ import axios from 'axios'
 import { baseurl } from "./constants";
 
 const instance = axios.create({
-  baseURL: baseurl,
+  baseURL: "https://app.medcheckin.shop/",
   withCredentials:true
 });
 
