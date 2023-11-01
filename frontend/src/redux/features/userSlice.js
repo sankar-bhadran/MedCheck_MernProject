@@ -28,7 +28,7 @@ export const sentotp = createAsyncThunk(
   async (phonenumber, rejectWithValue) => {
     console.log("Phonenumber", phonenumber);
     try {
-      const response = await axios.post("/api/sentotp", phonenumber);
+      const response = await axios.post("api/sentotp", phonenumber);
       console.log(response);
       return response;
     } catch (error) {
@@ -42,7 +42,7 @@ export const registerUser = createAsyncThunk(
   async (userData) => {
     console.log(userData);
     try {
-      const response = await axios.post("/api/signup", userData);
+      const response = await axios.post("api/signup", userData);
       console.log(response);
       return response.data;
     } catch (error) {
@@ -55,7 +55,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (credential) => {
     try {
-      const response = await axios.post("/api/login", credential);
+      const response = await axios.post("api/login", credential);
       console.log("response", response.data);
       return response.data;
     } catch (error) {
