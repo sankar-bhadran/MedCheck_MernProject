@@ -1,1 +1,1 @@
-export const baseurl = "https://app.medcheckin.shop";
+export const baseurl = "https://app.medcheckin.shop/";
