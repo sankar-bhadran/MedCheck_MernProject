@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getLabListingDetail } from "../../../redux/features/labSlice";
+import {baseurl} from '../../../utils/constants'
 
 const LabListingPage = () => {
   const dispatch = useDispatch();
@@ -59,7 +60,7 @@ const LabListingPage = () => {
                     border: "1px solid #e0e0e0",
                     borderRadius: "6px",
                   }}
-                  image={`http://localhost:5000/images/${result?.CenterImages?.[0]}`}
+                  image={`${baseurl}/images/${result?.CenterImages?.[0]}`}
                   title="green iguana"
                 />
                 <Stack direction="row" alignItems="center" mt={2} spacing={1}>

@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllLabs } from "../../../redux/features/labSlice";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import {baseurl} from '../../../utils/constants'
 
 const LabApprovelList = () => {
   const navigate = useNavigate;
@@ -92,7 +93,7 @@ const LabApprovelList = () => {
                         <CardMedia
                           component="img"
                           sx={{ width: 200, margin: 0 }}
-                          image={`http://localhost:5000/images/${data?.CenterImages?.[0]}`}
+                          image={`${baseurl}/images/${data?.CenterImages?.[0]}`}
                           alt="no Image"
                         />
                       </Card>

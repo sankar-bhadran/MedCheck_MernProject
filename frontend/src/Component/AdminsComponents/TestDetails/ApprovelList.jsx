@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCenters } from "../../../redux/features/admiSlice";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import {baseurl} from '../../../utils/constants'
 
 export default function StickyHeadTable() {
   const navigate = useNavigate;
@@ -93,7 +94,7 @@ export default function StickyHeadTable() {
                         <CardMedia
                           component="img"
                           sx={{ width: 200, margin: 0 }}
-                          image={`http://localhost:5000/images/${data?.CenterImages?.[0]}`}
+                          image={`${baseurl}/images/${data?.CenterImages?.[0]}`}
                           alt="no Image"
                         />
                       </Card>

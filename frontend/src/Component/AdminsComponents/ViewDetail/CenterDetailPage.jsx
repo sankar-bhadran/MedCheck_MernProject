@@ -27,6 +27,7 @@ import {
   centerreject,
 } from "../../../redux/features/admiSlice";
 import { ToastContainer, toast } from "react-toastify";
+import {baseurl} from '../../../utils/constants'
 
 const CenterDetailPage = () => {
   const [open, setOpen] = React.useState(false);
@@ -244,7 +245,7 @@ const CenterDetailPage = () => {
                                 <CardMedia
                                   component="img"
                                   sx={{ width: 200, margin: 0, height: 150 }}
-                                  image={`http://localhost:5000/images/${CenterData?.CenterImages?.[index]}`}
+                                  image={`${baseurl}/images/${CenterData?.CenterImages?.[index]}`}
                                   alt="no Image"
                                 />
                               </Card>
@@ -316,7 +317,7 @@ const CenterDetailPage = () => {
                             <CardMedia
                               component="img"
                               sx={{ width: 200, margin: 0, height: 150 }}
-                              image={`http://localhost:5000/images/${CenterData?.CertificateImages?.[0]?.NABH}`}
+                              image={`${baseurl}/images/${CenterData?.CertificateImages?.[0]?.NABH}`}
                               alt="no Image"
                             />
                           </Card>
@@ -359,7 +360,7 @@ const CenterDetailPage = () => {
                             <CardMedia
                               component="img"
                               sx={{ width: 200, margin: 0, height: 150 }}
-                              image={`http://localhost:5000/images/${CenterData?.CertificateImages?.[1]?.NABL}`}
+                              image={`${baseurl}/images/${CenterData?.CertificateImages?.[1]?.NABL}`}
                               alt="no Image"
                             />
                           </Card>
@@ -402,7 +403,7 @@ const CenterDetailPage = () => {
                             <CardMedia
                               component="img"
                               sx={{ width: 200, margin: 0, height: 150 }}
-                              image={`http://localhost:5000/images/${CenterData?.CertificateImages?.[2]?.ISO}`}
+                              image={`${baseurl}/images/${CenterData?.CertificateImages?.[2]?.ISO}`}
                               alt="no Image"
                             />
                           </Card>

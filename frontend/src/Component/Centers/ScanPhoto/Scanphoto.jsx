@@ -8,6 +8,7 @@ import {
   Container,
   Divider,
 } from "@mui/material";
+import {baseurl} from '../../../utils/constants'
 
 const Scanphoto = ({ state, setState }) => {
   const fileInputRef1 = React.useRef(null);
@@ -224,7 +225,7 @@ const Scanphoto = ({ state, setState }) => {
                           ) : state.CenterImages && state.CenterImages[2] ? (
                             <img
                               style={{ width: 240, height: 240, padding: 22 }}
-                              src={`http://localhost:5000/images/${state.CenterImages[2]}`}
+                              src={`${baseurl}/images/${state.CenterImages[2]}`}
                             />
                           ) : (
                             <p>Image is not valid or not found</p>

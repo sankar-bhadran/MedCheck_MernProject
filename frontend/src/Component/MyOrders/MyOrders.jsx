@@ -22,6 +22,7 @@ import {
   requirePropFactory,
 } from "@mui/material";
 import { resultreport } from "../../redux/features/userSlice";
+import {baseurl} from '../../utils/constants'
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#1778f2",
@@ -61,7 +62,7 @@ const MyOrders = () => {
 
   const downloadreports = (id) => {
     console.log("report", id);
-    dispatch(resultreport(id))
+    dispatch(resultreport(id));
   };
 
   useEffect(() => {
@@ -123,12 +124,18 @@ const MyOrders = () => {
                   <StyledTableCell align="right">
                     {" "}
                     {row.status === "Completed" ? (
-                      <Button
-                        size="small"
-                        onClick={() => downloadreports(row._id)}
-                      >
-                        Download Report
+                      <>
+                      <Button>
+                        <a
+                          href={`${baseurl}/images/${row.report}`}
+                          src=""
+                          style={{ textDecoration: "none" }} 
+                        >
+                          Download Report
+                        </a>
+
                       </Button>
+                      </>
                     ) : (
                       row.status
                     )}

@@ -15,6 +15,7 @@ import { getAllLabs } from "../../../redux/features/labSlice";
 import { scanPendingList } from '../../../redux/features/admiSlice';
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import {baseurl} from '../../../utils/constants'
 
 const PendingList = () => {
     const navigate = useNavigate;
@@ -93,7 +94,7 @@ const PendingList = () => {
                         <CardMedia
                           component="img"
                           sx={{ width: 200, margin: 0 }}
-                          image={`http://localhost:5000/images/${data?.CenterImages?.[0]}`}
+                          image={`${baseurl}/images/${data?.CenterImages?.[0]}`}
                           alt="no Image"
                         />
                       </Card>
