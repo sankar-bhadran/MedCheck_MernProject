@@ -13,7 +13,7 @@ import labRouter from "./routes/lab-router.js";
 const app = express();
 app.use(express.static('public'))
 app.use(express.json());
-app.use(cors({ credentials: true, origin: 'https://medcheckin.onrender.com' }));
+app.use(cors({ credentials: true, origin: 'https://www.medcheckin.shop' }));
 app.use("/api", userRouter);
 app.use('/admin',adminRouter)
 app.use('/center',centerRouter)
