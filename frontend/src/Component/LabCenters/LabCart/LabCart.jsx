@@ -19,7 +19,7 @@ import {
   import { useDispatch, useSelector } from "react-redux";
   import ToggleButton from "@mui/material/ToggleButton";
   import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
-  import { getuser, removeFromCart } from "../../../redux/features/userSlice";
+  import { getuser, removeFromCart,labRemoveFromCart } from "../../../redux/features/userSlice";
   import dayjs from "dayjs";
   import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
   import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -78,7 +78,8 @@ const LabCart = ({ state, setOrderDetails }) => {
     };
   
     const handleDeleteButton = (id) => {
-      dispatch(removeFromCart(id));
+      console.log("deleteid",id)
+      dispatch(labRemoveFromCart(id));
     };
   
     function formateDate(dateOfbirth) {

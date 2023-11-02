@@ -32,11 +32,16 @@ const DataAndTime = ({ state, setOrderDetails }) => {
 
   console.log(state);
 
-  let MorningSlots = [
+  let EveningSlots = [
+    "06:00 AM-07:00AM",
     "08:00 AM-09:00AM",
     "09:00 AM-10:00AM",
     "10:00 AM-11:00AM",
     "11:00 AM-12:00PM",
+    "12:00 PM-01:00PM",
+    "01:00 PM-02:00PM",
+    "02:00 PM-03:00PM",
+    "03:00 PM-04:00PM",
   ];
 
   const responsive = {
@@ -104,10 +109,22 @@ const DataAndTime = ({ state, setOrderDetails }) => {
     setBorderColor("#1778F2");
   };
 
-  
   const handleTypographyClick = (slot) => {
     setOrderDetails((prev) => ({ ...prev, slot }));
   };
+
+  const getCurrentTime = () => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    return `${currentHour < 10 ? "0" : ""}${currentHour}:${
+      currentMinute < 10 ? "0" : ""
+    }${currentMinute}`;
+  };
+
+  // Get the current time
+  const currentTime = getCurrentTime();
+  console.log("currentTime", currentTime);
 
   return (
     <div>
@@ -194,31 +211,51 @@ const DataAndTime = ({ state, setOrderDetails }) => {
                     border: "0.1px solid #bfbfbf",
                   }}
                 >
-                  Morning Slots(AM)
+                  <strong>Slots</strong>
                   <Grid container spacing={1} mt={1}>
-                    {MorningSlots.map((data, index) => (
-                      <Grid item mb={2} key={index}>
-                        <Paper
-                          sx={{
-                            padding: "6px",
-                            borderRadius: "12px",
-                            border:
-                              data === timeBoreder
-                                ? `2px solid ${borderColor}`
-                                : "#bfbfbf",
-                          }}
-                          onClick={() => handlePaperClick(data)}
-                        >
-                          <Typography sx={{cursor:"pointer"}}
-                            ref={typographyRef}
-                            onClick={() => handleTypographyClick(data)}>
-                            {data}
-                          </Typography>
-                        </Paper>
-                      </Grid>
-                    ))}
+                    {EveningSlots.map((data, index) => {
+                      const [slotStartTime, slotEndTime] = data.split("-");
+
+                      const isSlotDisabled =
+                       ( currentTime > slotStartTime &&
+                        currentTime < slotEndTime) ? true : (currentTime < slotStartTime) ? false : ""
+
+                      // Debugging: Log the values
+                      console.log("Slot Start Time:", slotStartTime);
+                      console.log("Slot End Time:", slotEndTime);
+                      console.log("Is Slot Disabled:", isSlotDisabled);
+
+                      return (
+                        <Grid item mb={2} key={index}>
+                          <Paper
+                            sx={{
+                              padding: "6px",
+                              borderRadius: "12px",
+                              border:
+                                data === timeBoreder
+                                  ? `2px solid ${borderColor}`
+                                  : "#bfbfbf",
+                              opacity: isSlotDisabled ? 0.5 : 1,
+                              pointerEvents: isSlotDisabled ? "none" : "auto",
+                              cursor: isSlotDisabled
+                                ? "not-allowed"
+                                : "pointer",
+                            }}
+                            onClick={() => handlePaperClick(data)}
+                          >
+                            <Typography
+                              sx={{ cursor: "pointer" }}
+                              ref={typographyRef}
+                              onClick={() => handleTypographyClick(data)}
+                            >
+                              {data}
+                            </Typography>
+                          </Paper>
+                        </Grid>
+                      );
+                    })}
                   </Grid>
-                  Afternoon Slots (PM)
+                  {/* Afternoon Slots (PM)
                   <Grid container spacing={1} mt={1}>
                     <Grid item>
                       <Paper
@@ -294,7 +331,7 @@ const DataAndTime = ({ state, setOrderDetails }) => {
                         </Typography>
                       </Paper>
                     </Grid>
-                  </Grid>
+                  </Grid> */}
                 </Paper>
               </Grid>
             </Grid>

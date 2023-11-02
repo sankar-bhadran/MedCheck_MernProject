@@ -14,7 +14,7 @@ import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import { getListingDetails } from "../../../redux/features/CenterSlice";
 import debounce from "lodash.debounce";
-import { searchDetails } from "../../../redux/features/labSlice";
+import { searching } from "../../../redux/features/labSlice";
 import { getAllLocations } from "../../../redux/features/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -35,7 +35,7 @@ const LabFilter = () => {
   };
 
   useEffect(() => {
-    dispatch(searchDetails({ search, selectedLocations }));
+    dispatch(searching({ search, selectedLocations }));
   }, [search, selectedLocations]);
 
   useEffect(() => {

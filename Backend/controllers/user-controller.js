@@ -70,14 +70,14 @@ export const verifyotp = async (req, res, next) => {
   const { otp, phonenumber } = req.body;
 
   try {
-    const verifiedResponse = {};
-    verifiedResponse.status = otp === "1234" ? "approved" : "";
-    // const verifiedResponse = await client.verify.v2
-    //   .services(servicessid)
-    //   .verificationChecks.create({
-    //     to: `+91${phonenumber}`,
-    //     code: otp,
-    //   });
+    // const verifiedResponse = {};
+    // verifiedResponse.status = otp === "1234" ? "approved" : "";
+    const verifiedResponse = await client.verify.v2
+      .services(servicessid)
+      .verificationChecks.create({
+        to: `+91${phonenumber}`,
+        code: otp,
+      });
     if (verifiedResponse.status === "approved") {
       next();
     } else {
@@ -549,3 +549,27 @@ export const logout = async (req, res) => {
   res.clearCookie("Token");
   return res.status(200).json({ message: "Succefully Logged out" });
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -318,6 +318,7 @@ export const searchDetails = async (req, res) => {
     const search = req.query.searchdata;
     const page = req.query.page;
     const location = req.query.location;
+    console.log(location)
     const ITEM_PER_PAGE = 6;
     const query = {
       $or: [
@@ -344,6 +345,20 @@ export const searchDetails = async (req, res) => {
     return res.status(400).json({ message: "somthing went wrong" });
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

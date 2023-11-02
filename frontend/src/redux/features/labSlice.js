@@ -151,15 +151,18 @@ export const getAllAddedTest = createAsyncThunk(
   }
 );
 
-export const searchDetails = createAsyncThunk(
+export const searching = createAsyncThunk(
   "lab/searchdetails",
   async (
     { search = "", page = "1", selectedLocations = "" },
     { rejectWithValue }
   ) => {
+    console.log("searchsadad ", selectedLocations);
+    console.log("search  ", search);
+    console.log("page ", page);
     try {
       const response = await axios.get(
-        `lab/searchdetails?searchdata=${search}&page=${page}&location=${selectedLocations}`
+        `labcenter/searchdetails?searchdata=${search}&page=${page}&location=${selectedLocations}`
       );
       console.log("response", response.data);
       return response.data;
@@ -347,17 +350,17 @@ const labSlice = createSlice({
         state.error = action.error.message || " ";
       })
 
-      .addCase(searchDetails.pending, (state, action) => {
+      .addCase(searching.pending, (state, action) => {
         state.loading = true;
       })
 
-      .addCase(searchDetails.fulfilled, (state, action) => {
+      .addCase(searching.fulfilled, (state, action) => {
         state.labStatus = true;
         state.labData = action.payload.labSearch;
         console.log("pageCount", action.payload);
       })
 
-      .addCase(searchDetails.rejected, (state, action) => {
+      .addCase(searching.rejected, (state, action) => {
         state.error = action.error.message || " ";
       });
   },

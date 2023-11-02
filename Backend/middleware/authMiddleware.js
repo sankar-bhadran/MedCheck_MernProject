@@ -9,7 +9,6 @@ export const verifyToken = (req, res, next) => {
   try {
     const newtoken=token.split('=')[1]
     const decoded = jwt.verify(newtoken, process.env.JWT_SECRET_KEY);
-    console.log("decoded",decoded)
     req.user = decoded._id;
     next();
   } catch (error) {

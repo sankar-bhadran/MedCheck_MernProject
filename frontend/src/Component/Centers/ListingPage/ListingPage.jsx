@@ -5,16 +5,13 @@ import {
   Chip,
   Grid,
   Pagination,
-  PaginationItem,
   Paper,
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import {
-  categorydetails,
-  getListingDetails,
   searchDetails,
 } from "../../../redux/features/CenterSlice";
 import { useDispatch, useSelector } from "react-redux";

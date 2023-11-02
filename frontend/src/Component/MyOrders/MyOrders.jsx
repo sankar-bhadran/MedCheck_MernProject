@@ -130,6 +130,7 @@ const MyOrders = () => {
                           href={`${baseurl}/images/${row.report}`}
                           src=""
                           style={{ textDecoration: "none" }} 
+                          target="blank"
                         >
                           Download Report
                         </a>
