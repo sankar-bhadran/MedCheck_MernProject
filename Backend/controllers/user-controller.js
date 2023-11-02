@@ -37,14 +37,14 @@ export const sendotp = async (req, res) => {
         .json({ message: "User already exist!Login instead" });
     } else {
       // console.log("else case");
-      // const otpResponse = "1234";
+      const otpResponse = "1234";
 
-      const otpResponse = await client.verify.v2
-        .services(accountSid)
-        .verifications.create({
-          to: `+91${phonenumber}`,
-          channel: "sms",
-        });
+      // const otpResponse = await client.verify.v2
+      //   .services(accountSid)
+      //   .verifications.create({
+      //     to: `+91${phonenumber}`,
+      //     channel: "sms",
+      //   });
 
       res.status(200).send(`OTP successful: ${JSON.stringify(otpResponse)}`);
     }
@@ -78,14 +78,14 @@ export const verifyotp = async (req, res, next) => {
   const { otp, phonenumber } = req.body;
 
   try {
-    // const verifiedResponse = {};
-    // verifiedResponse.status = otp === "1234" ? "approved" : "";
-    const verifiedResponse = await client.verify.v2
-      .services(servicessid)
-      .verificationChecks.create({
-        to: `+91${phonenumber}`,
-        code: otp,
-      });
+    const verifiedResponse = {};
+    verifiedResponse.status = otp === "1234" ? "approved" : "";
+    // const verifiedResponse = await client.verify.v2
+    //   .services(servicessid)
+    //   .verificationChecks.create({
+    //     to: `+91${phonenumber}`,
+    //     code: otp,
+    //   });
     if (verifiedResponse.status === "approved") {
       next();
     } else {
