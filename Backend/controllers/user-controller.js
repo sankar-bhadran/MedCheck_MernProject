@@ -13,9 +13,9 @@ import Mailgen from "mailgen";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import testModel from "../model/testModel.js";
-const accountSid = "AC6ffd98d07b09c3795988fca455810836";
-const authToken = "e667ea90d9fc4f925dfc0557ef214bd1";
-const servicessid = "VA6a2a14ec6072a70983306c795d3c2737";
+const accountSid = "AC7e746b86de59a6b6175cce72fd746514";
+const authToken = "706f37c82a60a61417bb587a78af7c24";
+const servicessid = "VA0c721327dc95fa853591aba6208fce03";
 const client = twilio(accountSid, authToken);
 
 // const API_KEY = process.env.MAILGUN_KEY;
@@ -25,6 +25,7 @@ const client = twilio(accountSid, authToken);
 
 export const sendotp = async (req, res) => {
   const { phonenumber, email } = req.body;
+  console.log(req.body);
   let user;
   try {
     user = await User.findOne({
@@ -35,8 +36,15 @@ export const sendotp = async (req, res) => {
         .status(400)
         .json({ message: "User already exist!Login instead" });
     } else {
-      console.log("else case");
-      const otpResponse = "1234";
+      // console.log("else case");
+      // const otpResponse = "1234";
+
+      const otpResponse = await client.verify.v2
+        .services(accountSid)
+        .verifications.create({
+          to: `+91${phonenumber}`,
+          channel: "sms",
+        });
 
       res.status(200).send(`OTP successful: ${JSON.stringify(otpResponse)}`);
     }
@@ -549,27 +557,3 @@ export const logout = async (req, res) => {
   res.clearCookie("Token");
   return res.status(200).json({ message: "Succefully Logged out" });
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
