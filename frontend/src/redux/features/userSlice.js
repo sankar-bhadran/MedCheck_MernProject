@@ -29,7 +29,7 @@ export const sentotp = createAsyncThunk(
     console.log("Phonenumber", phonenumber);
     try {
       const response = await axios.post("api/sentotp", phonenumber);
-      console.log(response);
+      console.log("response",response);
       return response;
     } catch (error) {
       throw error.response.data;

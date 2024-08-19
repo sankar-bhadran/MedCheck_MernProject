@@ -13,9 +13,9 @@ import Mailgen from "mailgen";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import testModel from "../model/testModel.js";
-const accountSid = "AC7e746b86de59a6b6175cce72fd746514";
-const authToken = "706f37c82a60a61417bb587a78af7c24";
-const servicessid = "VA0c721327dc95fa853591aba6208fce03";
+const accountSid = "AC6ffd98d07b09c3795988fca455810836";
+const authToken = "791ed8b8351244a8d147101b4f937916";
+const servicessid = "VA6a2a14ec6072a70983306c795d3c2737";
 const client = twilio(accountSid, authToken);
 
 // const API_KEY = process.env.MAILGUN_KEY;
@@ -37,15 +37,15 @@ export const sendotp = async (req, res) => {
         .json({ message: "User already exist!Login instead" });
     } else {
       // console.log("else case");
+      // console.log(accountSid);
       const otpResponse = "1234";
-
       // const otpResponse = await client.verify.v2
-      //   .services(accountSid)
+      //   .services("VA6a2a14ec6072a70983306c795d3c2737")
       //   .verifications.create({
       //     to: `+91${phonenumber}`,
       //     channel: "sms",
       //   });
-
+      console.log(otpResponse);
       res.status(200).send(`OTP successful: ${JSON.stringify(otpResponse)}`);
     }
   } catch (error) {
